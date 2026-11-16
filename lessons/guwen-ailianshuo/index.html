@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>愛蓮說｜互動國文講義</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
+<!-- ===== ENGINE:STYLE START｜共用樣式，單篇講義不要改這一段；要改請改 templates/guwen.html 再執行 tools/check.py --sync ===== -->
+<style>
+:root{
+  --paper:#f5f1e8; --card:#fffdfa; --ink:#292621; --sub:#6f675f; --line:#ded5c7;
+  --seal:#ad4c3f; --ok:#3f7457; --ng:#a8473e;
+  --main:#4f7180; --deep:#314d58; --soft:#e5eef0; --gold:#c3944c;
+  --serif:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --r:8px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.8;overflow-x:hidden}
+a{color:var(--deep)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--main);outline-offset:2px}
+.wrap{max-width:880px;margin:0 auto;padding:0 18px}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;padding:28px 0 40px;border-bottom:1px solid var(--line)}
+.hero .back{display:inline-flex;align-items:center;min-height:44px;font-size:14px;color:var(--sub);text-decoration:none}
+.hero .back:hover{color:var(--deep)}
+.hero .eyebrow{margin:18px 0 6px;font-size:13px;letter-spacing:.48em;color:var(--main);font-weight:700}
+.hero h1{position:relative;z-index:1;margin:0;font-family:var(--serif);font-weight:900;font-size:clamp(42px,9vw,66px);line-height:1.2;color:var(--deep);letter-spacing:.06em}
+.hero .byline{position:relative;z-index:1;margin:10px 0 18px;font-family:var(--serif);color:var(--sub);letter-spacing:.08em}
+.hero .lead{position:relative;z-index:1;max-width:36em;margin:0;color:var(--ink)}
+.hero .mark{position:absolute;right:-10px;top:-24px;font-family:var(--serif);font-weight:900;font-size:clamp(170px,40vw,320px);line-height:1;color:var(--main);opacity:.08;pointer-events:none;user-select:none}
+
+/* Sticky controls */
+.controls{position:sticky;top:0;z-index:20;background:rgba(245,241,232,.94);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.controls .wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-top:6px;padding-bottom:6px}
+.toggle{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:6px;background:var(--card);cursor:pointer;font-size:15px}
+.toggle .dot{width:30px;height:18px;border-radius:9px;background:var(--line);position:relative;transition:background .2s}
+.toggle .dot::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:left .2s}
+.toggle[aria-pressed="true"] .dot{background:var(--main)}
+.toggle[aria-pressed="true"] .dot::after{left:14px}
+.controls .score{margin-left:auto;font-size:14px;color:var(--sub);white-space:nowrap}
+.controls .score b{color:var(--deep);font-size:16px}
+
+/* Section head */
+.sec{margin:56px 0}
+.sec-head{margin-bottom:22px}
+.sec-head .kicker{font-size:12px;letter-spacing:.24em;color:var(--main);font-weight:700}
+.sec-head h2{margin:2px 0 8px;font-family:var(--serif);font-weight:700;font-size:clamp(24px,5vw,30px);line-height:1.4;color:var(--deep)}
+.sec-head .rule{height:1px;background:linear-gradient(90deg,var(--main),rgba(0,0,0,0))}
+.sec-head p{margin:12px 0 0;color:var(--sub)}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 22px 18px;margin-bottom:16px}
+.num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--main);color:#fff;font-size:14px;font-weight:700;flex:none}
+.bg-card{border-left:6px solid var(--seal)}
+.facts{display:grid;grid-template-columns:7em 1fr;gap:6px 14px;margin:0}
+.facts dt{color:var(--sub);font-size:14px;padding-top:2px}
+.facts dd{margin:0}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:18px 0 4px;padding:14px 16px;background:var(--soft);border-radius:6px}
+.chain .step{font-weight:700;color:var(--deep)}
+.chain .arrow{color:var(--gold);font-weight:700}
+.quote{margin:18px 0 0;padding:6px 0 6px 18px;border-left:3px solid var(--gold);font-family:var(--serif);font-size:20px;line-height:1.7;color:var(--deep)}
+.quote small{display:block;margin-top:4px;font-family:var(--sans);font-size:14px;color:var(--sub)}
+
+/* Text */
+.para-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;color:var(--sub);font-size:14px}
+.src{font-family:var(--serif);font-size:21px;line-height:2.25;letter-spacing:.04em;margin:0}
+/* 直式注音：寫在字的右側，聲調放在注音右邊（臺灣課本慣例） */
+ruby{display:inline-flex;align-items:center;vertical-align:baseline}
+ruby rt{display:inline-flex;align-items:center;margin:0 .06em 0 .05em;font-family:var(--sans);font-size:.52em;line-height:1;color:var(--sub);letter-spacing:0;font-weight:400}
+ruby rt .zy-b{writing-mode:vertical-rl;text-orientation:upright;line-height:1.02}
+ruby rt .zy-t{margin-left:.04em;line-height:1}
+body.no-zhuyin ruby rt{display:none}
+.annot{background:none;border:0;padding:0;margin:0;font:inherit;letter-spacing:inherit;color:inherit;cursor:pointer;border-bottom:1.5px dotted var(--main);line-height:inherit}
+.annot:hover,.annot[aria-expanded="true"]{background:var(--soft)}
+.tr-btn{display:inline-flex;align-items:center;min-height:44px;margin-top:8px;padding:0 14px;border:1px solid var(--line);border-radius:6px;background:var(--paper);cursor:pointer;font-size:14px;color:var(--deep)}
+.tr-list{display:none;margin:12px 0 0;border-top:1px solid var(--line)}
+.tr-list.open{display:block}
+.tr-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:6px 18px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.tr-src{font-family:var(--serif);color:var(--deep)}
+.tr-txt{color:var(--ink)}
+#pop{position:fixed;z-index:50;max-width:min(320px,calc(100vw - 24px));background:var(--card);border:1px solid var(--line);border-top:3px solid var(--main);border-radius:6px;box-shadow:0 8px 24px rgba(41,38,33,.14);padding:12px 14px;font-size:15px;line-height:1.7;display:none}
+#pop.show{display:block}
+#pop b{display:block;font-family:var(--serif);color:var(--deep);font-size:17px;margin-bottom:2px}
+
+/* Tables & notes */
+.table-box{margin-bottom:18px}
+.table-box h3,.subhead{margin:0 0 10px;font-family:var(--serif);font-size:19px;color:var(--deep)}
+.data-table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;font-size:15px}
+.data-table th,.data-table td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.data-table th{background:var(--soft);color:var(--deep);font-weight:700;white-space:nowrap}
+.data-table td:first-child{font-family:var(--serif);font-weight:700;color:var(--deep)}
+.note,.trap{border-radius:6px;padding:14px 16px;margin:0 0 14px;font-size:15px}
+.note{background:var(--soft);border-left:4px solid var(--main)}
+.trap{background:#f7ebe7;border-left:4px solid var(--seal)}
+.note b.t,.trap b.t{display:block;margin-bottom:2px;color:var(--deep)}
+.trap b.t{color:var(--seal)}
+
+/* Explore */
+.explore-status{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:6px 0 14px;font-size:14px;color:var(--sub)}
+.explore-msg{min-height:1.8em;font-size:15px;color:var(--deep)}
+.ghost{min-height:44px;padding:0 16px;border:1px solid var(--line);border-radius:6px;background:var(--card);cursor:pointer;font-size:14px}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+.match .col-title{font-size:13px;letter-spacing:.12em;color:var(--sub);font-weight:700}
+.match .col{display:flex;flex-direction:column;gap:10px}
+.m-item{position:relative;min-height:52px;padding:10px 14px;border:1px solid var(--line);border-radius:6px;background:var(--card);text-align:left;cursor:pointer;line-height:1.55}
+.m-item.left{font-family:var(--serif);font-size:17px;color:var(--deep)}
+.m-item[aria-pressed="true"]{border-color:var(--main);box-shadow:inset 0 0 0 2px var(--main)}
+.m-item.done{background:var(--soft);border-color:var(--main);cursor:default}
+.m-item.done::before{content:attr(data-n);position:absolute;top:-8px;left:-8px;width:22px;height:22px;border-radius:50%;background:var(--main);color:#fff;font-size:12px;font-family:var(--sans);display:flex;align-items:center;justify-content:center}
+.m-item.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.pool{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.c-item{min-height:48px;padding:8px 14px;border:1px solid var(--line);border-radius:6px;background:var(--card);cursor:pointer;font-family:var(--serif);font-size:17px;color:var(--deep);text-align:left}
+.c-item[aria-pressed="true"]{border-color:var(--main);box-shadow:inset 0 0 0 2px var(--main)}
+.buckets{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.bucket{border:1px solid var(--line);border-radius:var(--r);background:var(--card);overflow:hidden}
+.bucket-btn{display:block;width:100%;min-height:48px;padding:10px 14px;border:0;border-bottom:1px solid var(--line);background:var(--soft);text-align:left;cursor:pointer;font-weight:700;color:var(--deep)}
+.bucket-btn small{display:block;font-weight:400;color:var(--sub);font-size:13px}
+.bucket ul{list-style:none;margin:0;padding:6px 14px 10px}
+.bucket li{padding:6px 0;border-bottom:1px dashed var(--line);font-family:var(--serif);color:var(--deep)}
+.bucket li:last-child{border-bottom:0}
+.bucket li small{display:block;font-family:var(--sans);font-size:13px;color:var(--sub)}
+
+/* Quiz */
+.q{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 20px 16px;margin-bottom:14px}
+.q-meta{display:flex;gap:12px;font-size:13px;color:var(--sub);margin-bottom:6px}
+.q-meta .tag{color:var(--main);font-weight:700}
+.q-stem{margin:0 0 12px;font-size:17px;line-height:1.8}
+.q-stem .blank{display:inline-block;min-width:4.5em;border-bottom:2px solid var(--main);text-align:center;color:var(--deep);font-weight:700;padding:0 4px}
+.opts{display:grid;gap:8px}
+.opts.chips{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;min-height:48px;padding:10px 14px;border:1px solid var(--line);border-radius:6px;background:var(--paper);text-align:left;cursor:pointer;line-height:1.6}
+.opt .k{flex:none;font-weight:700;color:var(--main)}
+.opt:hover:not([disabled]){border-color:var(--main)}
+.opt[disabled]{cursor:default}
+.opt.correct{background:#e8f0ea;border-color:var(--ok)}
+.opt.correct .k{color:var(--ok)}
+.opt.wrong{background:#f6e7e4;border-color:var(--ng)}
+.opt.wrong .k{color:var(--ng)}
+.opt.dim{opacity:.55}
+.explain{display:none;margin-top:12px;padding:12px 14px;border-radius:6px;background:var(--soft);font-size:15px}
+.explain.show{display:block}
+.explain .v{font-weight:700;margin-right:6px}
+.explain .v.ok{color:var(--ok)}
+.explain .v.ng{color:var(--ng)}
+.result{display:none;text-align:center;padding:26px 20px}
+.result.show{display:block}
+.result .big{font-family:var(--serif);font-size:40px;font-weight:900;color:var(--deep)}
+.primary{min-height:48px;padding:0 22px;border:0;border-radius:6px;background:var(--deep);color:#fff;cursor:pointer;font-size:15px;margin-top:10px}
+
+/* Related & footer */
+.related a{display:block;padding:14px 16px;border:1px solid var(--line);border-radius:var(--r);background:var(--card);text-decoration:none;margin-bottom:10px}
+.related a b{font-family:var(--serif);font-size:18px;color:var(--deep)}
+.related a span{display:block;font-size:14px;color:var(--sub)}
+footer{border-top:1px solid var(--line);padding:22px 0 40px;font-size:13px;color:var(--sub);line-height:1.7}
+
+@media (max-width:640px){
+  .card,.q{padding:18px 16px 14px}
+  .src{font-size:19px;line-height:2.3}
+  .facts{grid-template-columns:1fr;gap:0}
+  .facts dt{margin-top:8px}
+  .tr-row{grid-template-columns:1fr;gap:2px}
+  .match{grid-template-columns:1fr}
+  .match .col.right{margin-top:8px}
+  .data-table thead{display:none}
+  .data-table,.data-table tbody,.data-table tr,.data-table td{display:block;width:100%}
+  .data-table tr{border-bottom:1px solid var(--line);padding:6px 0}
+  .data-table td{border:0;padding:4px 12px}
+  .data-table td::before{content:attr(data-label);display:block;font-size:12px;color:var(--sub);font-family:var(--sans);font-weight:400}
+  .controls .score{margin-left:0;width:100%;text-align:right}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+<!-- ===== ENGINE:STYLE END ===== -->
+</head>
+<body>
+<div id="app"></div>
+<div id="pop" role="dialog" aria-live="polite"></div>
+
+<!-- ===== LESSON DATA START｜本篇資料：新增講義時只改這一段（JSON 格式，規則見 CLAUDE.md §7） ===== -->
+<script type="application/json" id="lesson-data">
+{
+  "slug": "guwen-ailianshuo",
+  "type": "guwen",
+  "subject": "國文",
+  "title": "愛蓮說",
+  "dynasty": "北宋",
+  "author": "周敦頤",
+  "source": "《周元公集》",
+  "grade": "八年級上學期",
+  "textbook": "翰林版、康軒版國文第三冊（八年級上學期）；課次依學生使用的課本為準",
+  "watermark": "蓮",
+  "palette": {
+    "main": "#94545e",
+    "deep": "#5e3940",
+    "soft": "#f5e9e9",
+    "gold": "#b98a50"
+  },
+  "lead": "滿池花草，周敦頤只愛「出淤泥而不染」的蓮。這篇一百一十九字的短文，先寫蓮的生長與姿態，再把菊、牡丹、蓮比成三種人。讀懂之後你會發現，作者寫的不是花，而是他心中的君子，以及他對世人追求富貴的感嘆。",
+  "card": {
+    "order": 10,
+    "desc": "從蓮的七個特徵讀出君子品格，練習「託物言志」與賓語提前。",
+    "modes": [
+      "連連看",
+      "填空克漏字",
+      "即時回饋單選"
+    ]
+  },
+  "background": {
+    "kicker": "BACKGROUND",
+    "title": "濂溪先生，替蓮說話",
+    "facts": [
+      [
+        "作者",
+        "周敦頤（1017－1073），字茂叔，北宋道州營道（今湖南道縣）人。晚年在廬山築書堂，以故鄉的濂溪命名，世稱**濂溪先生**。"
+      ],
+      [
+        "地位",
+        "被尊為**宋代理學的開山祖師**，著有《太極圖說》《通書》。"
+      ],
+      [
+        "文體",
+        "**說**：說明事理的文體，常藉一件事物帶出道理。本文是「**託物言志**」：寫蓮，其實在寫理想中的君子。"
+      ],
+      [
+        "寫法",
+        "以菊、牡丹**陪襯**蓮：菊是正襯（同樣清高），牡丹是反襯（象徵富貴）。"
+      ]
+    ],
+    "chain": [
+      "寫蓮的生長與姿態",
+      "對應君子的品德",
+      "感嘆愛蓮者少、愛牡丹者多"
+    ],
+    "quote": {
+      "text": "出淤泥而不染，濯清漣而不妖",
+      "note": "本文最常被引用的名句：比喻身處不好的環境，仍能保持清白、不同流合汙。"
+    }
+  },
+  "text": {
+    "kicker": "TEXT",
+    "title": "一池清漣，三種愛花人",
+    "intro": "虛線底的詞可以點開注釋；每段下方的「逐句語譯」會列出原句和白話。",
+    "paragraphs": [
+      {
+        "label": "第一段　寫愛花之人與蓮的姿態",
+        "sentences": [
+          {
+            "src": "水陸草木之花，可愛者甚[{蕃:ㄈㄢˊ}]。",
+            "tr": "水中和陸地上草本、木本植物的花，值得喜愛的非常多。"
+          },
+          {
+            "src": "[晉陶淵明獨愛菊]；",
+            "tr": "東晉的陶淵明唯獨喜愛菊花；"
+          },
+          {
+            "src": "自[李唐]來，世人甚愛牡丹；",
+            "tr": "從唐朝以來，世人非常喜愛牡丹；"
+          },
+          {
+            "src": "[{予:ㄩˊ}]獨愛蓮之出[{淤:ㄩ}泥]而不染，",
+            "tr": "我卻唯獨喜愛蓮花：它從淤泥中長出來，卻不被汙染，"
+          },
+          {
+            "src": "[{濯:ㄓㄨㄛˊ}清{漣:ㄌㄧㄢˊ}]而不[妖]，",
+            "tr": "在清水裡洗滌過，卻不顯得妖豔；"
+          },
+          {
+            "src": "[中通外直]，[不{蔓:ㄇㄢˋ}不枝]，",
+            "tr": "莖的內部中空貫通，外形挺直，不生藤蔓，也不長旁枝；"
+          },
+          {
+            "src": "[香遠益清]，[亭亭淨植]，",
+            "tr": "香氣傳得越遠越顯清幽，潔淨挺拔地直立在水中；"
+          },
+          {
+            "src": "可遠觀而不可[{褻:ㄒㄧㄝˋ}玩]焉。",
+            "tr": "只能從遠處欣賞，卻不能靠近隨意玩弄。"
+          }
+        ],
+        "notes": {
+          "蕃": "多。音ㄈㄢˊ。",
+          "晉陶淵明獨愛菊": "陶淵明是東晉末年的詩人，辭官歸隱田園，喜愛菊花，詩中有「采菊東籬下，悠然見南山」。",
+          "李唐": "唐朝皇室姓李，所以稱唐朝為「李唐」。",
+          "予": "我。音ㄩˊ。",
+          "淤泥": "水底沉積的汙泥。淤，音ㄩ。",
+          "濯清漣": "在清澈的水波中洗滌。濯：洗；漣：水面細小的波紋。",
+          "妖": "豔麗而不端莊。",
+          "中通外直": "蓮的莖內部中空相通，外形挺直。",
+          "不蔓不枝": "不生藤蔓，不長旁枝。「蔓」「枝」本是名詞，這裡當動詞用。",
+          "香遠益清": "香氣傳得越遠，越顯得清幽。益：更加。",
+          "亭亭淨植": "高高挺立、潔淨地直立著。亭亭：聳立的樣子；植：立。",
+          "褻玩": "親近而不莊重地玩弄。褻，音ㄒㄧㄝˋ，輕慢。"
+        }
+      },
+      {
+        "label": "第二段　以花喻人，抒發感慨",
+        "sentences": [
+          {
+            "src": "予謂菊，花之[隱逸者]也；",
+            "tr": "我認為，菊花是花中的隱士；"
+          },
+          {
+            "src": "牡丹，花之[富貴者]也；",
+            "tr": "牡丹是花中的富貴人家；"
+          },
+          {
+            "src": "蓮，花之[君子者]也。",
+            "tr": "蓮花是花中的君子。"
+          },
+          {
+            "src": "[{噫:ㄧ}]！[菊之愛]，陶後[{鮮:ㄒㄧㄢˇ}]有聞；",
+            "tr": "唉！對菊花的喜愛，在陶淵明之後就很少聽說了；"
+          },
+          {
+            "src": "蓮之愛，[同予者何人]？",
+            "tr": "對蓮花的喜愛，和我一樣的還有誰呢？"
+          },
+          {
+            "src": "牡丹之愛，[宜乎]眾矣！",
+            "tr": "對牡丹的喜愛，人數當然很多了！"
+          }
+        ],
+        "notes": {
+          "隱逸者": "隱居避世、不求名利的人。",
+          "富貴者": "擁有或追求榮華富貴的人。",
+          "君子者": "品德高尚的人。",
+          "噫": "嘆詞，表示感慨。音ㄧ。",
+          "菊之愛": "就是「愛菊」。把受詞「菊」放到動詞前，中間加「之」來強調（賓語提前）。",
+          "鮮": "少。音ㄒㄧㄢˇ。",
+          "同予者何人": "和我一樣（喜愛蓮花）的還有誰呢？言下之意是很少。",
+          "宜乎": "當然、難怪。"
+        }
+      }
+    ]
+  },
+  "words": {
+    "kicker": "WORDS",
+    "title": "三種花，三種人",
+    "tables": [
+      {
+        "caption": "菊、牡丹、蓮對照",
+        "head": [
+          "花",
+          "愛它的人",
+          "時代",
+          "象徵",
+          "作者的感嘆"
+        ],
+        "rows": [
+          [
+            "菊",
+            "陶淵明",
+            "東晉",
+            "隱逸者",
+            "陶後鮮有聞：愛菊的人少了"
+          ],
+          [
+            "牡丹",
+            "世人",
+            "唐代以來",
+            "富貴者",
+            "宜乎眾矣：追求富貴的人很多"
+          ],
+          [
+            "蓮",
+            "作者（予）",
+            "北宋",
+            "君子",
+            "同予者何人：知音難尋"
+          ]
+        ]
+      },
+      {
+        "caption": "一字多義",
+        "head": [
+          "字",
+          "本文用法",
+          "其他用法"
+        ],
+        "rows": [
+          [
+            "鮮",
+            "陶後{鮮:ㄒㄧㄢˇ}有聞：**少**",
+            "新鮮（ㄒㄧㄢ）：剛產出、不陳舊"
+          ],
+          [
+            "益",
+            "香遠益清：**更加**",
+            "利益、益處：好處"
+          ],
+          [
+            "植",
+            "亭亭淨植：**立**",
+            "種植：栽種"
+          ],
+          [
+            "宜",
+            "宜乎眾矣：**當然**",
+            "適宜：合適"
+          ]
+        ]
+      }
+    ],
+    "boxes": [
+      {
+        "kind": "note",
+        "title": "賓語提前：「菊之愛」＝「愛菊」",
+        "text": "文言文為了強調受詞，會把受詞放到動詞前，中間加「之」。本文的「菊之愛」「蓮之愛」「牡丹之愛」都是這種句式，還原就是「愛菊」「愛蓮」「愛牡丹」。"
+      },
+      {
+        "kind": "trap",
+        "title": "易錯：「不蔓不枝」的蔓、枝是動詞",
+        "text": "要讀成「不生藤蔓、不長旁枝」（名詞當動詞用），再進一步說出它象徵君子**不攀附權勢、不節外生枝**。"
+      },
+      {
+        "kind": "trap",
+        "title": "易錯：「宜乎眾矣」不是稱讚",
+        "text": "字面是「當然很多人」，語氣卻是**感嘆**：追求富貴的人到處都是。和「同予者何人」一起讀，才看得出作者的寂寞與不以為然。"
+      }
+    ]
+  },
+  "explore": {
+    "type": "match",
+    "kicker": "EXPLORE",
+    "title": "把蓮的樣子，翻成君子的品格",
+    "intro": "作者寫的每一個蓮的特徵，都對應一種君子品格。先點左邊蓮的特徵，再點右邊對應的品格。",
+    "left": "蓮的樣子",
+    "right": "君子的品格",
+    "pairs": [
+      [
+        "出淤泥而不染",
+        "身處汙濁的環境，仍保持清白",
+        "淤泥＝不好的環境；不染＝不被汙染。"
+      ],
+      [
+        "濯清漣而不妖",
+        "質樸端莊，不炫耀、不賣弄",
+        "妖是豔麗而不莊重；不妖＝不招搖。"
+      ],
+      [
+        "中通外直",
+        "內心通達事理，外在行為正直",
+        "中＝內在，外＝言行。"
+      ],
+      [
+        "不蔓不枝",
+        "不攀附權勢，也不節外生枝",
+        "蔓、枝當動詞：不攀爬蔓延、不旁生枝節。"
+      ],
+      [
+        "香遠益清",
+        "美好的名聲越傳越遠、越顯清正",
+        "香氣比喻德行與聲譽。"
+      ],
+      [
+        "亭亭淨植",
+        "立身端正，潔身自好",
+        "植＝立，直挺而潔淨地站著。"
+      ],
+      [
+        "可遠觀而不可褻玩",
+        "莊重自持，讓人敬重而不敢輕慢",
+        "不可褻玩＝不能隨便親近玩弄。"
+      ]
+    ],
+    "done": "七組都配對完成。你剛剛做的，就是讀「託物言志」的方法：先看物的特徵，再翻成人的品格。"
+  },
+  "quiz": {
+    "kicker": "QUIZ",
+    "title": "濯清漣：十題自我檢測",
+    "intro": "點選答案後會立刻顯示對錯與詳解，選項順序每題不同。",
+    "items": [
+      {
+        "id": "q1",
+        "tag": "字音",
+        "type": "choice",
+        "q": "下列「」中的字，哪一個注音正確？",
+        "options": [
+          "「濯」清漣：ㄓㄨㄛˊ",
+          "「褻」玩：ㄓˊ",
+          "可愛者甚「蕃」：ㄈㄢ",
+          "陶後「鮮」有聞：ㄒㄧㄢ"
+        ],
+        "answer": 0,
+        "explain": "濯音ㄓㄨㄛˊ，洗滌。褻音ㄒㄧㄝˋ；蕃音ㄈㄢˊ，是第二聲；鮮在此是「少」，讀ㄒㄧㄢˇ。"
+      },
+      {
+        "id": "q2",
+        "tag": "字義",
+        "type": "choice",
+        "q": "「菊之愛，陶後『鮮』有聞」的「鮮」，和下列哪一個詞語中的「鮮」意思相同？",
+        "options": [
+          "寡廉『鮮』恥",
+          "新『鮮』蔬果",
+          "『鮮』豔奪目",
+          "光『鮮』亮麗"
+        ],
+        "answer": 0,
+        "explain": "本文的鮮讀ㄒㄧㄢˇ，意思是「少」。「寡廉鮮恥」指缺少廉恥，鮮也是「少」。其餘三個讀ㄒㄧㄢ，指新的、明亮的。"
+      },
+      {
+        "id": "q3",
+        "tag": "文法",
+        "type": "cloze",
+        "q": "「菊之愛」是把受詞提前的句式，還原成一般語序，就是「＿＿」。",
+        "options": [
+          "愛菊",
+          "菊愛",
+          "菊之所愛",
+          "愛之菊"
+        ],
+        "answer": 0,
+        "explain": "文言文常把受詞（菊）放到動詞（愛）前面，中間加「之」來強調，所以「菊之愛」＝「愛菊」。〈陋室銘〉的「何陋之有」＝「有何陋」，也是同一種句式。"
+      },
+      {
+        "id": "q4",
+        "tag": "修辭",
+        "type": "choice",
+        "q": "「出淤泥而不染，濯清漣而不妖」兩句字數相同、結構相對。下列哪一句也用了同樣的修辭？",
+        "options": [
+          "苔痕上階綠，草色入簾青",
+          "噫！菊之愛，陶後鮮有聞",
+          "蓮之愛，同予者何人",
+          "可遠觀而不可褻玩焉"
+        ],
+        "answer": 0,
+        "explain": "兩句字數相等、詞性與結構相對，是**對偶**。〈陋室銘〉的「苔痕上階綠，草色入簾青」也是對偶。其餘選項分別是感嘆、提問與一般敘述。"
+      },
+      {
+        "id": "q5",
+        "tag": "文意",
+        "type": "choice",
+        "q": "「蓮之愛，同予者何人？」最能表現作者哪一種心情？",
+        "options": [
+          "感嘆知音難尋，像自己一樣堅持君子品格的人很少",
+          "疑惑別人為什麼不知道蓮花的名字",
+          "驕傲自己是唯一懂得種蓮的人",
+          "期待讀者寫信告訴他誰也喜歡蓮花"
+        ],
+        "answer": 0,
+        "explain": "這是問而不答的感嘆：表面問「和我一樣的有誰」，其實是說很少，透露作者的寂寞，並不是真的要人回答。"
+      },
+      {
+        "id": "q6",
+        "tag": "文意",
+        "type": "choice",
+        "q": "「牡丹之愛，宜乎眾矣！」的語氣，最接近下列哪一種？",
+        "options": [
+          "感嘆世人多半追求富貴",
+          "欣喜牡丹受到大家喜愛",
+          "讚美唐代以來國家富強",
+          "勸大家改種牡丹"
+        ],
+        "answer": 0,
+        "explain": "牡丹象徵富貴，「宜乎眾矣」是「當然很多人」，帶著**感嘆與不以為然**：追求名利的人到處都是，堅守君子品格的人卻很少。"
+      },
+      {
+        "id": "q7",
+        "tag": "情境應用",
+        "type": "choice",
+        "q": "小晴的哥哥在環境複雜的工地打工，卻始終堅持誠實，不跟著別人偷工減料。下列哪一句最適合形容他？",
+        "options": [
+          "出淤泥而不染",
+          "香遠益清",
+          "亭亭淨植",
+          "中通外直"
+        ],
+        "answer": 0,
+        "explain": "「出淤泥而不染」比喻身處不好的環境，仍不受影響、保持清白，最符合題意。「香遠益清」重在名聲遠播；「亭亭淨植」重在立身端正；「中通外直」重在內心通達、行為正直，但都沒有扣到「環境不好」。"
+      },
+      {
+        "id": "q8",
+        "tag": "寫作手法",
+        "type": "choice",
+        "q": "關於本文寫菊和牡丹的作用，下列說明何者正確？",
+        "options": [
+          "菊和蓮同樣清高，是正面陪襯；牡丹和蓮相反，是反面陪襯",
+          "菊和牡丹都是反面陪襯，用來批評陶淵明和世人",
+          "牡丹是正面陪襯，因為唐人和作者一樣愛花",
+          "三種花地位相同，作者沒有特別偏好"
+        ],
+        "answer": 0,
+        "explain": "作者用菊（隱逸，同樣清高）**正襯**蓮，用牡丹（富貴）**反襯**蓮，讓蓮的君子形象更突出。作者對陶淵明是敬重的，並沒有批評。"
+      },
+      {
+        "id": "q9",
+        "tag": "結構",
+        "type": "cloze",
+        "q": "本文的結構是：第一段＿＿；第二段把三種花比成三種人，並抒發感慨。",
+        "options": [
+          "先寫世人愛花的情形，再細寫蓮的特點",
+          "先寫作者種蓮的經過，再寫賞花心得",
+          "先比較三種花的價格，再說明栽種方法",
+          "先寫陶淵明的一生，再寫唐代歷史"
+        ],
+        "answer": 0,
+        "explain": "第一段由「可愛者甚蕃」寫到陶淵明愛菊、世人愛牡丹，再集中描寫蓮；第二段才議論三種花象徵的人格，最後三句感嘆。整體是先**敘**後**議**。"
+      },
+      {
+        "id": "q10",
+        "tag": "主旨",
+        "type": "choice",
+        "q": "下列何者最能說明本文主旨？",
+        "options": [
+          "藉蓮的特質，表達潔身自好、不慕富貴的君子情操，並感嘆世風",
+          "勸讀者效法陶淵明，辭官歸隱田園",
+          "讚美唐代以來愛花的風氣興盛",
+          "說明蓮花比菊花、牡丹更容易栽種"
+        ],
+        "answer": 0,
+        "explain": "本文託物言志：寫蓮是為了寫理想的君子——在汙濁中保持清白、正直、不攀附權貴；同時感嘆像陶淵明那樣的隱者少、追求富貴的人多。"
+      }
+    ]
+  },
+  "related": [
+    {
+      "slug": "guwen-loushiming",
+      "title": "陋室銘",
+      "why": "同樣寫君子的品格，也有賓語提前：「何陋之有」＝「有何陋」。"
+    }
+  ],
+  "footer": "愛蓮說．互動國文講義｜原文與香港教育局《初中中國語文學習單元示例：君子之德》所錄原文逐字核對，標點採臺灣課本常見用法；注釋、語譯為本講義自行整理。"
+}
+</script>
+<!-- ===== LESSON DATA END ===== -->
+
+<!-- ===== ENGINE:SCRIPT START｜共用程式，單篇講義不要改這一段 ===== -->
+<script>
+(function () {
+  'use strict';
+  var D = JSON.parse(document.getElementById('lesson-data').textContent);
+  var app = document.getElementById('app');
+  var pop = document.getElementById('pop');
+
+  /* ---------- 小工具 ---------- */
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  // 注音：本體直排，聲調（ˊˇˋ）放右側；輕聲（˙）在最上方
+  function zyHtml(z) {
+    var t = /[ˊˇˋ]$/.test(z) ? z.slice(-1) : '';
+    var b = t ? z.slice(0, -1) : z;
+    return '<span class="zy-b">' + esc(b) + '</span>' + (t ? '<span class="zy-t">' + t + '</span>' : '');
+  }
+  function rubyHtml(base, z) { return '<ruby>' + esc(base) + '<rt>' + zyHtml(z) + '</rt></ruby>'; }
+  // 說明文字用：**粗體**、{字:注音}
+  function rich(s) {
+    return esc(s)
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/\{([^:{}]+):([^{}]+)\}/g, function (_, a, b) { return rubyHtml(a, b); });
+  }
+  function plain(s) { return String(s).replace(/\{([^:{}]+):[^{}]+\}/g, '$1'); }
+  function seeded(str) {
+    var h = 1779033703 ^ str.length;
+    for (var i = 0; i < str.length; i++) { h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; }
+    return function () {
+      h = Math.imul(h ^ h >>> 16, 2246822507); h = Math.imul(h ^ h >>> 13, 3266489909); h ^= h >>> 16;
+      return (h >>> 0) / 4294967296;
+    };
+  }
+  function shuffle(arr, key) {
+    var a = arr.slice(), rnd = seeded(key);
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  function head(sec) {
+    var w = el('div', 'sec-head');
+    w.appendChild(el('div', 'kicker', sec.kicker || ''));
+    w.appendChild(el('h2', null, sec.title || ''));
+    w.appendChild(el('div', 'rule'));
+    if (sec.intro) { var p = el('p'); p.innerHTML = rich(sec.intro); w.appendChild(p); }
+    return w;
+  }
+  function section(id, sec) {
+    var s = el('section', 'sec'); s.id = id;
+    s.appendChild(head(sec));
+    return s;
+  }
+
+  /* ---------- 色盤 ---------- */
+  var pal = D.palette || {};
+  ['main', 'deep', 'soft', 'gold'].forEach(function (k) {
+    if (pal[k]) document.documentElement.style.setProperty('--' + k, pal[k]);
+  });
+  document.title = D.title + '｜互動國文講義';
+
+  /* ---------- Hero ---------- */
+  var hero = el('header', 'hero');
+  var hw = el('div', 'wrap');
+  var back = el('a', 'back', '← 會考複習講義庫'); back.href = '../../';
+  hw.appendChild(back);
+  hw.appendChild(el('p', 'eyebrow', '互動國文講義'));
+  hw.appendChild(el('h1', null, D.title));
+  hw.appendChild(el('p', 'byline', [D.dynasty, D.author, D.source].filter(Boolean).join('．')));
+  var lead = el('p', 'lead'); lead.innerHTML = rich(D.lead || ''); hw.appendChild(lead);
+  var mark = el('div', 'mark', D.watermark || ''); mark.setAttribute('aria-hidden', 'true');
+  hero.appendChild(mark); hero.appendChild(hw);
+  app.appendChild(hero);
+
+  /* ---------- Sticky controls ---------- */
+  var ctr = el('div', 'controls'); var cw = el('div', 'wrap'); ctr.appendChild(cw);
+  function toggle(label, on, fn) {
+    var b = el('button', 'toggle'); b.type = 'button';
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    b.appendChild(el('span', 'dot')); b.appendChild(el('span', null, label));
+    b.addEventListener('click', function () {
+      var v = b.getAttribute('aria-pressed') !== 'true';
+      b.setAttribute('aria-pressed', v ? 'true' : 'false'); fn(v);
+    });
+    return b;
+  }
+  cw.appendChild(toggle('注音', true, function (v) { document.body.classList.toggle('no-zhuyin', !v); }));
+  cw.appendChild(toggle('全文語譯', false, function (v) {
+    document.querySelectorAll('.tr-list').forEach(function (l) { l.classList.toggle('open', v); });
+    document.querySelectorAll('.tr-btn').forEach(function (b) { b.setAttribute('aria-expanded', v ? 'true' : 'false'); b.textContent = v ? '收起語譯' : '逐句語譯'; });
+  }));
+  var scoreBox = el('div', 'score'); scoreBox.setAttribute('aria-live', 'polite');
+  cw.appendChild(scoreBox);
+  app.appendChild(ctr);
+
+  var main = el('main', 'wrap'); app.appendChild(main);
+
+  /* ---------- 寫作背景 ---------- */
+  if (D.background) {
+    var B = D.background, s1 = section('background', B);
+    var c = el('div', 'card bg-card');
+    var dl = el('dl', 'facts');
+    (B.facts || []).forEach(function (f) {
+      dl.appendChild(el('dt', null, f[0]));
+      var dd = el('dd'); dd.innerHTML = rich(f[1]); dl.appendChild(dd);
+    });
+    c.appendChild(dl);
+    if (B.chain && B.chain.length) {
+      var ch = el('div', 'chain');
+      B.chain.forEach(function (t, i) {
+        if (i) { var a = el('span', 'arrow', '→'); a.setAttribute('aria-hidden', 'true'); ch.appendChild(a); }
+        ch.appendChild(el('span', 'step', t));
+      });
+      c.appendChild(ch);
+    }
+    if (B.quote) {
+      var q = el('blockquote', 'quote'); q.innerHTML = rich(B.quote.text) + (B.quote.note ? '<small>' + rich(B.quote.note) + '</small>' : '');
+      c.appendChild(q);
+    }
+    s1.appendChild(c); main.appendChild(s1);
+  }
+
+  /* ---------- 課文與注釋 ---------- */
+  // 原文標記：[詞] = 可點注釋（注釋寫在該段 notes，鍵為去掉注音後的文字）；{字:注音} = 注音
+  function inline(src, notes, into) {
+    var re = /\[([^\]]+)\]|\{([^:{}]+):([^{}]+)\}/g, last = 0, m;
+    while ((m = re.exec(src))) {
+      if (m.index > last) into.appendChild(document.createTextNode(src.slice(last, m.index)));
+      if (m[1] != null) {
+        var key = plain(m[1]), b = el('button', 'annot'); b.type = 'button';
+        b.innerHTML = rich(m[1]);
+        b.dataset.term = key; b.dataset.note = (notes && notes[key]) || '';
+        b.setAttribute('aria-expanded', 'false');
+        if (!b.dataset.note && window.console) console.warn('缺少注釋：' + key);
+        into.appendChild(b);
+      } else {
+        var r = el('span'); r.innerHTML = rubyHtml(m[2], m[3]); into.appendChild(r.firstChild);
+      }
+      last = re.lastIndex;
+    }
+    if (last < src.length) into.appendChild(document.createTextNode(src.slice(last)));
+  }
+  if (D.text) {
+    var T = D.text, s2 = section('text', T);
+    T.paragraphs.forEach(function (p, i) {
+      var c = el('article', 'card');
+      var ph = el('div', 'para-head'); ph.appendChild(el('span', 'num', String(i + 1)));
+      ph.appendChild(el('span', null, p.label || ('第 ' + (i + 1) + ' 段')));
+      c.appendChild(ph);
+      var src = el('p', 'src');
+      p.sentences.forEach(function (s) { inline(s.src, p.notes, src); });
+      c.appendChild(src);
+      var tb = el('button', 'tr-btn', '逐句語譯'); tb.type = 'button'; tb.setAttribute('aria-expanded', 'false');
+      var list = el('div', 'tr-list'); list.id = 'tr-' + i; tb.setAttribute('aria-controls', list.id);
+      p.sentences.forEach(function (s) {
+        var row = el('div', 'tr-row');
+        var a = el('div', 'tr-src'); a.innerHTML = rich(s.src.replace(/\[|\]/g, ''));
+        var b = el('div', 'tr-txt'); b.innerHTML = rich(s.tr);
+        row.appendChild(a); row.appendChild(b); list.appendChild(row);
+      });
+      tb.addEventListener('click', function () {
+        var open = !list.classList.contains('open');
+        list.classList.toggle('open', open); tb.setAttribute('aria-expanded', open ? 'true' : 'false');
+        tb.textContent = open ? '收起語譯' : '逐句語譯';
+      });
+      c.appendChild(tb); c.appendChild(list);
+      s2.appendChild(c);
+    });
+    main.appendChild(s2);
+  }
+
+  /* ---------- 注釋提示框 ---------- */
+  var openBtn = null, openY = 0;
+  function closePop() { pop.classList.remove('show'); if (openBtn) openBtn.setAttribute('aria-expanded', 'false'); openBtn = null; }
+  function placePop(b) {
+    var r = b.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight;
+    var left = Math.min(Math.max(12, r.left), window.innerWidth - pw - 12);
+    var top = r.bottom + 8; if (top + ph > window.innerHeight - 8) top = Math.max(8, r.top - ph - 8);
+    pop.style.left = left + 'px'; pop.style.top = top + 'px';
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.annot');
+    if (!b) { if (!e.target.closest || !e.target.closest('#pop')) closePop(); return; }
+    if (openBtn === b) { closePop(); return; }
+    closePop();
+    pop.innerHTML = '<b>' + esc(b.dataset.term) + '</b>' + rich(b.dataset.note || '（注釋待補）');
+    pop.classList.add('show'); placePop(b);
+    b.setAttribute('aria-expanded', 'true'); openBtn = b; openY = window.scrollY;
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closePop(); });
+  // 小幅捲動時讓提示框跟著詞走；捲離較遠才關閉
+  window.addEventListener('scroll', function () {
+    if (!openBtn) return;
+    if (Math.abs(window.scrollY - openY) > 120) closePop(); else placePop(openBtn);
+  }, { passive: true });
+  window.addEventListener('resize', closePop);
+
+  /* ---------- 字詞整理 ---------- */
+  if (D.words) {
+    var W = D.words, s3 = section('words', W);
+    (W.tables || []).forEach(function (t) {
+      var box = el('div', 'table-box');
+      if (t.caption) box.appendChild(el('h3', null, t.caption));
+      var tbl = el('table', 'data-table'), th = el('thead'), tr = el('tr');
+      t.head.forEach(function (x) { tr.appendChild(el('th', null, x)); });
+      th.appendChild(tr); tbl.appendChild(th);
+      var tb = el('tbody');
+      t.rows.forEach(function (row) {
+        var r = el('tr');
+        row.forEach(function (cell, ci) { var td = el('td'); td.innerHTML = rich(cell); td.setAttribute('data-label', t.head[ci]); r.appendChild(td); });
+        tb.appendChild(r);
+      });
+      tbl.appendChild(tb); box.appendChild(tbl); s3.appendChild(box);
+    });
+    (W.boxes || []).forEach(function (bx) {
+      var d = el('div', bx.kind === 'trap' ? 'trap' : 'note');
+      d.innerHTML = '<b class="t">' + esc(bx.title) + '</b>' + rich(bx.text);
+      s3.appendChild(d);
+    });
+    main.appendChild(s3);
+  }
+
+  /* ---------- 量身探索 ---------- */
+  function exploreMatch(X, host) {
+    var st = el('div', 'explore-status'), msg = el('div', 'explore-msg'); msg.setAttribute('aria-live', 'polite');
+    var prog = el('span'), reset = el('button', 'ghost', '重新配對'); reset.type = 'button';
+    st.appendChild(prog); st.appendChild(reset);
+    var grid = el('div', 'match'), L = el('div', 'col left'), R = el('div', 'col right');
+    L.appendChild(el('div', 'col-title', X.left)); R.appendChild(el('div', 'col-title', X.right));
+    grid.appendChild(L); grid.appendChild(R);
+    host.appendChild(st); host.appendChild(msg); host.appendChild(grid);
+    var sel = null, done = 0, count = 0, btns = [];
+    function mk(text, side, idx) {
+      var b = el('button', 'm-item ' + side); b.type = 'button'; b.innerHTML = rich(text);
+      b.dataset.side = side; b.dataset.idx = idx; b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', function () { pick(b); }); btns.push(b); return b;
+    }
+    function build() {
+      btns = []; sel = null; done = 0; count = 0;
+      L.querySelectorAll('.m-item').forEach(function (n) { n.remove(); });
+      R.querySelectorAll('.m-item').forEach(function (n) { n.remove(); });
+      X.pairs.forEach(function (p, i) { L.appendChild(mk(p[0], 'left', i)); });
+      shuffle(X.pairs.map(function (p, i) { return i; }), D.slug + '-match').forEach(function (i) { R.appendChild(mk(X.pairs[i][1], 'right', i)); });
+      prog.textContent = '已配對 0 / ' + X.pairs.length; msg.textContent = X.hint || '先點左邊一項，再點右邊對應的一項。';
+    }
+    function pick(b) {
+      if (b.classList.contains('done')) return;
+      if (!sel || sel.dataset.side === b.dataset.side) {
+        if (sel) sel.setAttribute('aria-pressed', 'false');
+        sel = (sel === b) ? null : b; if (sel) sel.setAttribute('aria-pressed', 'true'); return;
+      }
+      if (sel.dataset.idx === b.dataset.idx) {
+        count++; [sel, b].forEach(function (n) { n.classList.add('done'); n.setAttribute('aria-pressed', 'false'); n.dataset.n = count; n.setAttribute('aria-disabled', 'true'); });
+        done++; prog.textContent = '已配對 ' + done + ' / ' + X.pairs.length;
+        var why = X.pairs[+b.dataset.idx][2]; msg.innerHTML = why ? '配對成功：' + rich(why) : '配對成功。';
+        if (done === X.pairs.length) msg.innerHTML = rich(X.done || '全部配對完成！');
+      } else {
+        [sel, b].forEach(function (n) { n.classList.remove('shake'); void n.offsetWidth; n.classList.add('shake'); n.setAttribute('aria-pressed', 'false'); });
+        msg.textContent = '這兩項不是一組，再看一次字面意思。';
+      }
+      sel = null;
+    }
+    reset.addEventListener('click', build); build();
+  }
+  function exploreClassify(X, host) {
+    var st = el('div', 'explore-status'), msg = el('div', 'explore-msg'); msg.setAttribute('aria-live', 'polite');
+    var prog = el('span'), reset = el('button', 'ghost', '重新分類'); reset.type = 'button';
+    st.appendChild(prog); st.appendChild(reset);
+    var pool = el('div', 'pool'), bk = el('div', 'buckets');
+    host.appendChild(st); host.appendChild(pool); host.appendChild(msg); host.appendChild(bk);
+    var sel = null, done = 0, lists = [];
+    function build() {
+      pool.innerHTML = ''; bk.innerHTML = ''; lists = []; sel = null; done = 0;
+      X.categories.forEach(function (c, ci) {
+        var box = el('div', 'bucket'), btn = el('button', 'bucket-btn'); btn.type = 'button';
+        btn.innerHTML = esc(c.name) + (c.desc ? '<small>' + rich(c.desc) + '</small>' : '');
+        btn.addEventListener('click', function () { drop(ci); });
+        var ul = el('ul'); lists.push(ul); box.appendChild(btn); box.appendChild(ul); bk.appendChild(box);
+      });
+      shuffle(X.items.map(function (x, i) { return i; }), D.slug + '-classify').forEach(function (i) {
+        var b = el('button', 'c-item'); b.type = 'button'; b.innerHTML = rich(X.items[i].text); b.dataset.i = i; b.setAttribute('aria-pressed', 'false');
+        b.addEventListener('click', function () { if (sel) sel.setAttribute('aria-pressed', 'false'); sel = (sel === b) ? null : b; if (sel) sel.setAttribute('aria-pressed', 'true'); });
+        pool.appendChild(b);
+      });
+      prog.textContent = '已分類 0 / ' + X.items.length; msg.textContent = X.hint || '先點一句，再點它所屬的類別。';
+    }
+    function drop(ci) {
+      if (!sel) { msg.textContent = '先點上方的一句，再選類別。'; return; }
+      var it = X.items[+sel.dataset.i];
+      if (it.cat === ci) {
+        var li = el('li'); li.innerHTML = rich(it.text) + (it.why ? '<small>' + rich(it.why) + '</small>' : '');
+        lists[ci].appendChild(li); sel.remove(); sel = null; done++;
+        prog.textContent = '已分類 ' + done + ' / ' + X.items.length;
+        msg.innerHTML = done === X.items.length ? rich(X.done || '全部分類完成！') : '放對了。';
+      } else {
+        sel.classList.remove('shake'); void sel.offsetWidth; sel.classList.add('shake');
+        msg.innerHTML = '不是這一類。' + (it.hint ? '提示：' + rich(it.hint) : '再讀一次這句在寫什麼。');
+      }
+    }
+    reset.addEventListener('click', build); build();
+  }
+  if (D.explore) {
+    var X = D.explore, s4 = section('explore', X), host = el('div', 'card');
+    if (X.type === 'match') exploreMatch(X, host);
+    else if (X.type === 'classify') exploreClassify(X, host);
+    s4.appendChild(host); main.appendChild(s4);
+  }
+
+  /* ---------- 綜合自我測驗 ---------- */
+  var Q = D.quiz && D.quiz.items || [], right = 0, answered = 0;
+  function updateScore() {
+    scoreBox.innerHTML = Q.length ? '測驗　答對 <b>' + right + '</b>｜已作答 ' + answered + ' / ' + Q.length : '';
+  }
+  if (Q.length) {
+    var s5 = section('quiz', D.quiz), box = el('div'), res = el('div', 'card result');
+    s5.appendChild(box); s5.appendChild(res); main.appendChild(s5);
+    var KEYS = ['A', 'B', 'C', 'D', 'E'];
+    function renderQuiz() {
+      box.innerHTML = ''; right = 0; answered = 0; res.classList.remove('show'); updateScore();
+      Q.forEach(function (it, qi) {
+        var c = el('div', 'q'); c.id = 'q-' + it.id;
+        var meta = el('div', 'q-meta');
+        meta.appendChild(el('span', null, '第 ' + (qi + 1) + ' 題 / ' + Q.length));
+        meta.appendChild(el('span', 'tag', it.tag || ''));
+        c.appendChild(meta);
+        var stem = el('p', 'q-stem');
+        var BL = '＿＿';
+        if (it.type === 'cloze' && it.q.indexOf(BL) > -1) {
+          var parts = it.q.split(BL);
+          stem.innerHTML = rich(parts[0]) + '<span class="blank">？</span>' + rich(parts.slice(1).join(BL));
+        } else stem.innerHTML = rich(it.q);
+        c.appendChild(stem);
+        var opts = el('div', 'opts' + (it.type === 'cloze' ? ' chips' : ''));
+        var order = shuffle(it.options.map(function (o, i) { return i; }), D.slug + '-' + it.id);
+        var exp = el('div', 'explain'); exp.setAttribute('aria-live', 'polite');
+        order.forEach(function (oi, pos) {
+          var b = el('button', 'opt'); b.type = 'button';
+          b.innerHTML = '<span class="k">' + KEYS[pos] + '</span><span>' + rich(it.options[oi]) + '</span>';
+          b.dataset.oi = oi;
+          b.addEventListener('click', function () {
+            var ok = oi === it.answer; answered++; if (ok) right++;
+            opts.querySelectorAll('.opt').forEach(function (o) {
+              o.disabled = true;
+              if (+o.dataset.oi === it.answer) o.classList.add('correct');
+              else if (o === b) o.classList.add('wrong'); else o.classList.add('dim');
+            });
+            if (it.type === 'cloze') stem.querySelector('.blank').innerHTML = rich(it.options[it.answer]);
+            exp.innerHTML = '<span class="v ' + (ok ? 'ok">答對了' : 'ng">再想想') + '</span>' + rich(it.explain);
+            exp.classList.add('show'); updateScore();
+            if (answered === Q.length) showResult();
+          });
+          opts.appendChild(b);
+        });
+        c.appendChild(opts); c.appendChild(exp); box.appendChild(c);
+      });
+    }
+    function showResult() {
+      var ratio = right / Q.length;
+      var m = ratio === 1 ? '全對！這篇的觀念已經很穩，可以挑戰下一篇。' : ratio >= .7 ? '大部分都掌握了，回頭看看答錯題的詳解就更完整。' : '先回到課文和字詞整理再讀一次，再重新測驗會更有感。';
+      res.innerHTML = '<div class="big">' + right + ' / ' + Q.length + '</div><p>' + m + '</p>';
+      var again = el('button', 'primary', '重新測驗'); again.type = 'button';
+      again.addEventListener('click', function () { renderQuiz(); document.getElementById('quiz').scrollIntoView(); });
+      res.appendChild(again); res.classList.add('show');
+    }
+    renderQuiz();
+  }
+
+  /* ---------- 延伸閱讀與頁尾 ---------- */
+  if (D.related && D.related.length) {
+    var s6 = section('related', { kicker: 'NEXT', title: '接著讀' }), rl = el('div', 'related');
+    D.related.forEach(function (r) {
+      var a = el('a'); a.href = '../' + r.slug + '/';
+      a.innerHTML = '<b>' + esc(r.title) + '</b><span>' + rich(r.why) + '</span>';
+      rl.appendChild(a);
+    });
+    s6.appendChild(rl); main.appendChild(s6);
+  }
+  var ft = el('footer'), fw = el('div', 'wrap');
+  fw.innerHTML = rich(D.footer || '') + (D.textbook ? '<br>課本對應：' + rich(D.textbook) : '');
+  ft.appendChild(fw); app.appendChild(ft);
+})();
+</script>
+<!-- ===== ENGINE:SCRIPT END ===== -->
+</body>
+</html>

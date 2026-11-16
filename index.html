@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>會考複習講義庫</title>
+<meta name="description" content="給國中生的會考複習互動講義。每一篇都依同一份 CLAUDE.md 規則製作：先讀懂、再整理、最後馬上練習。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f5f1e8; --card:#fffdfa; --ink:#292621; --sub:#6f675f; --line:#ded5c7;
+  --seal:#ad4c3f; --main:#3c6659; --deep:#28453c; --soft:#e6eeea; --gold:#b48743;
+  --serif:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.8;overflow-x:hidden}
+a{color:var(--deep)}
+:focus-visible{outline:2px solid var(--main);outline-offset:2px}
+.wrap{max-width:880px;margin:0 auto;padding:0 18px}
+.hero{position:relative;overflow:hidden;padding:64px 0 44px;border-bottom:1px solid var(--line)}
+.hero .eyebrow{margin:0 0 8px;font-size:13px;letter-spacing:.48em;color:var(--main);font-weight:700}
+.hero h1{position:relative;z-index:1;margin:0;font-family:var(--serif);font-weight:900;font-size:clamp(40px,8.5vw,62px);line-height:1.25;color:var(--deep);letter-spacing:.06em}
+.hero p.lead{position:relative;z-index:1;max-width:34em;margin:16px 0 0}
+.hero .mark{position:absolute;right:-12px;top:-30px;font-family:var(--serif);font-weight:900;font-size:clamp(180px,42vw,330px);line-height:1;color:var(--main);opacity:.07;pointer-events:none;user-select:none}
+.sec{margin:52px 0}
+.sec-head .kicker{font-size:12px;letter-spacing:.24em;color:var(--main);font-weight:700}
+.sec-head h2{margin:2px 0 8px;font-family:var(--serif);font-size:clamp(24px,5vw,30px);color:var(--deep)}
+.sec-head .rule{height:1px;background:linear-gradient(90deg,var(--main),rgba(0,0,0,0));margin-bottom:22px}
+.group-title{margin:28px 0 12px;font-family:var(--serif);font-size:20px;color:var(--deep);border-left:4px solid var(--seal);padding-left:10px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.lesson{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-top:4px solid var(--c,var(--main));border-radius:8px;padding:18px 18px 14px;text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s}
+.lesson:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(41,38,33,.08)}
+.lesson .meta{font-size:13px;color:var(--sub)}
+.lesson h3{margin:4px 0 0;font-family:var(--serif);font-weight:900;font-size:26px;color:var(--deep);letter-spacing:.06em}
+.lesson .by{font-family:var(--serif);font-size:14px;color:var(--sub)}
+.lesson p{margin:10px 0 8px;font-size:15px;flex:1}
+.lesson .modes{font-size:13px;color:var(--sub)}
+.lesson .go{margin-top:10px;font-weight:700;color:var(--deep)}
+.soon{margin:14px 0 0;font-size:14px;color:var(--sub)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px}
+.step .n{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--main);color:#fff;font-weight:700;font-size:14px}
+.step h3{margin:8px 0 4px;font-family:var(--serif);font-size:19px;color:var(--deep)}
+.step code{font-size:14px;background:var(--soft);padding:1px 6px;border-radius:4px}
+.step p{margin:0 0 8px;font-size:15px}
+.step a{font-size:14px}
+.ask{margin-top:16px;padding:16px 18px;border-left:4px solid var(--gold);background:var(--card);border-radius:6px}
+.ask .t{font-size:13px;color:var(--sub);letter-spacing:.1em}
+.ask q{display:block;margin-top:4px;font-family:var(--serif);font-size:18px;color:var(--deep);quotes:"「" "」"}
+footer{border-top:1px solid var(--line);padding:22px 0 40px;font-size:13px;color:var(--sub)}
+@media (max-width:640px){.hero{padding:44px 0 34px}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="mark" aria-hidden="true">習</div>
+  <div class="wrap">
+    <p class="eyebrow">國中會考．互動講義</p>
+    <h1>會考複習講義庫</h1>
+    <p class="lead">給國中生的會考複習講義。每一篇都照同一份規則製作：先讀懂原文與觀念，再整理易混字詞，最後馬上練習、立刻看到詳解。手機和電腦都能開，每篇也是單一檔案，下載後可以離線使用。</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="sec" id="library">
+    <div class="sec-head"><div class="kicker">LIBRARY</div><h2>講義庫</h2><div class="rule"></div></div>
+    <div id="groups"></div>
+    <p class="soon">社會科章節講義、國學常識互動站的模板規劃中，完成後會照同一套規則加入。</p>
+  </section>
+
+  <section class="sec" id="how">
+    <div class="sec-head"><div class="kicker">HOW IT WORKS</div><h2>這套講義怎麼長出來</h2><div class="rule"></div></div>
+    <div class="steps">
+      <div class="step">
+        <span class="n">1</span>
+        <h3>員工手冊：CLAUDE.md</h3>
+        <p>寫清楚三件事：要做出什麼成品、哪些可以動哪些不能動、怎樣才算做完。AI 每次開工前先讀它。</p>
+        <a href="https://github.com/Chloe-0607/huikao-lessons/blob/main/CLAUDE.md">閱讀 CLAUDE.md →</a>
+      </div>
+      <div class="step">
+        <span class="n">2</span>
+        <h3>模板：一份引擎，換資料就是新講義</h3>
+        <p><code>templates/guwen.html</code> 分成「共用引擎」和「本篇資料」兩區。新增講義只填資料區，版面、互動、測驗邏輯全部共用。</p>
+        <a href="https://github.com/Chloe-0607/huikao-lessons/blob/main/templates/guwen.html">看模板 →</a>
+      </div>
+      <div class="step">
+        <span class="n">3</span>
+        <h3>驗收：check.py</h3>
+        <p><code>tools/check.py</code> 自動檢查題數、選項、注釋與首頁登記表；<code>--sync</code> 可以把模板更新同步到每一篇。</p>
+        <a href="https://github.com/Chloe-0607/huikao-lessons/blob/main/tools/check.py">看檢查工具 →</a>
+      </div>
+    </div>
+    <div class="ask">
+      <div class="t">之後新增一篇，只要對 AI 說</div>
+      <q>請先讀 CLAUDE.md，再製作〈記承天夜遊〉講義。</q>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap">會考複習講義庫｜Chloe 製作．內容以學生使用的課本為準，各篇頁尾標有原文核對來源。<br><a href="https://github.com/Chloe-0607/huikao-lessons">GitHub 專案</a></div></footer>
+
+<!-- ===== REGISTRY｜首頁登記表：由 tools/check.py --sync 依各篇講義資料自動產生，請不要手動修改 ===== -->
+<script type="application/json" id="registry">
+[
+  {
+    "slug": "guwen-ailianshuo",
+    "path": "lessons/guwen-ailianshuo/",
+    "subject": "國文",
+    "title": "愛蓮說",
+    "dynasty": "北宋",
+    "author": "周敦頤",
+    "grade": "八年級上學期",
+    "desc": "從蓮的七個特徵讀出君子品格，練習「託物言志」與賓語提前。",
+    "modes": [
+      "連連看",
+      "填空克漏字",
+      "即時回饋單選"
+    ],
+    "color": "#94545e",
+    "order": 10
+  },
+  {
+    "slug": "guwen-loushiming",
+    "path": "lessons/guwen-loushiming/",
+    "subject": "國文",
+    "title": "陋室銘",
+    "dynasty": "唐",
+    "author": "劉禹錫",
+    "grade": "八年級下學期",
+    "desc": "八十一字的居室銘文：練習類比起興、賓語提前與韻腳判斷。",
+    "modes": [
+      "分類點選",
+      "填空克漏字",
+      "即時回饋單選"
+    ],
+    "color": "#526b48",
+    "order": 20
+  }
+]
+</script>
+<script>
+(function () {
+  var reg = JSON.parse(document.getElementById('registry').textContent || '[]');
+  var host = document.getElementById('groups');
+  var order = ['國文', '社會', '國學常識'];
+  var groups = {};
+  reg.forEach(function (r) { (groups[r.subject] = groups[r.subject] || []).push(r); });
+  Object.keys(groups).sort(function (a, b) {
+    var ia = order.indexOf(a), ib = order.indexOf(b);
+    return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+  }).forEach(function (s) {
+    var h = document.createElement('h3'); h.className = 'group-title'; h.textContent = s; host.appendChild(h);
+    var box = document.createElement('div'); box.className = 'cards';
+    groups[s].forEach(function (r) {
+      var a = document.createElement('a'); a.className = 'lesson'; a.href = r.path;
+      if (r.color) a.style.setProperty('--c', r.color);
+      var meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = r.subject + '．' + r.grade;
+      var t = document.createElement('h3'); t.textContent = r.title;
+      var by = document.createElement('div'); by.className = 'by'; by.textContent = [r.dynasty, r.author].filter(Boolean).join('．');
+      var p = document.createElement('p'); p.textContent = r.desc;
+      var m = document.createElement('div'); m.className = 'modes'; m.textContent = r.modes && r.modes.length ? '互動：' + r.modes.join('、') : '';
+      var go = document.createElement('div'); go.className = 'go'; go.textContent = '開始閱讀 →';
+      [meta, t, by, p, m, go].forEach(function (n) { a.appendChild(n); });
+      box.appendChild(a);
+    });
+    host.appendChild(box);
+  });
+  if (!reg.length) host.textContent = '目前還沒有講義。';
+})();
+</script>
+</body>
+</html>

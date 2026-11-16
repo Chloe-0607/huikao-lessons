@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>陋室銘｜互動國文講義</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
+<!-- ===== ENGINE:STYLE START｜共用樣式，單篇講義不要改這一段；要改請改 templates/guwen.html 再執行 tools/check.py --sync ===== -->
+<style>
+:root{
+  --paper:#f5f1e8; --card:#fffdfa; --ink:#292621; --sub:#6f675f; --line:#ded5c7;
+  --seal:#ad4c3f; --ok:#3f7457; --ng:#a8473e;
+  --main:#4f7180; --deep:#314d58; --soft:#e5eef0; --gold:#c3944c;
+  --serif:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --r:8px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.8;overflow-x:hidden}
+a{color:var(--deep)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--main);outline-offset:2px}
+.wrap{max-width:880px;margin:0 auto;padding:0 18px}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;padding:28px 0 40px;border-bottom:1px solid var(--line)}
+.hero .back{display:inline-flex;align-items:center;min-height:44px;font-size:14px;color:var(--sub);text-decoration:none}
+.hero .back:hover{color:var(--deep)}
+.hero .eyebrow{margin:18px 0 6px;font-size:13px;letter-spacing:.48em;color:var(--main);font-weight:700}
+.hero h1{position:relative;z-index:1;margin:0;font-family:var(--serif);font-weight:900;font-size:clamp(42px,9vw,66px);line-height:1.2;color:var(--deep);letter-spacing:.06em}
+.hero .byline{position:relative;z-index:1;margin:10px 0 18px;font-family:var(--serif);color:var(--sub);letter-spacing:.08em}
+.hero .lead{position:relative;z-index:1;max-width:36em;margin:0;color:var(--ink)}
+.hero .mark{position:absolute;right:-10px;top:-24px;font-family:var(--serif);font-weight:900;font-size:clamp(170px,40vw,320px);line-height:1;color:var(--main);opacity:.08;pointer-events:none;user-select:none}
+
+/* Sticky controls */
+.controls{position:sticky;top:0;z-index:20;background:rgba(245,241,232,.94);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.controls .wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-top:6px;padding-bottom:6px}
+.toggle{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:6px;background:var(--card);cursor:pointer;font-size:15px}
+.toggle .dot{width:30px;height:18px;border-radius:9px;background:var(--line);position:relative;transition:background .2s}
+.toggle .dot::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:left .2s}
+.toggle[aria-pressed="true"] .dot{background:var(--main)}
+.toggle[aria-pressed="true"] .dot::after{left:14px}
+.controls .score{margin-left:auto;font-size:14px;color:var(--sub);white-space:nowrap}
+.controls .score b{color:var(--deep);font-size:16px}
+
+/* Section head */
+.sec{margin:56px 0}
+.sec-head{margin-bottom:22px}
+.sec-head .kicker{font-size:12px;letter-spacing:.24em;color:var(--main);font-weight:700}
+.sec-head h2{margin:2px 0 8px;font-family:var(--serif);font-weight:700;font-size:clamp(24px,5vw,30px);line-height:1.4;color:var(--deep)}
+.sec-head .rule{height:1px;background:linear-gradient(90deg,var(--main),rgba(0,0,0,0))}
+.sec-head p{margin:12px 0 0;color:var(--sub)}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 22px 18px;margin-bottom:16px}
+.num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--main);color:#fff;font-size:14px;font-weight:700;flex:none}
+.bg-card{border-left:6px solid var(--seal)}
+.facts{display:grid;grid-template-columns:7em 1fr;gap:6px 14px;margin:0}
+.facts dt{color:var(--sub);font-size:14px;padding-top:2px}
+.facts dd{margin:0}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:18px 0 4px;padding:14px 16px;background:var(--soft);border-radius:6px}
+.chain .step{font-weight:700;color:var(--deep)}
+.chain .arrow{color:var(--gold);font-weight:700}
+.quote{margin:18px 0 0;padding:6px 0 6px 18px;border-left:3px solid var(--gold);font-family:var(--serif);font-size:20px;line-height:1.7;color:var(--deep)}
+.quote small{display:block;margin-top:4px;font-family:var(--sans);font-size:14px;color:var(--sub)}
+
+/* Text */
+.para-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;color:var(--sub);font-size:14px}
+.src{font-family:var(--serif);font-size:21px;line-height:2.25;letter-spacing:.04em;margin:0}
+/* 直式注音：寫在字的右側，聲調放在注音右邊（臺灣課本慣例） */
+ruby{display:inline-flex;align-items:center;vertical-align:baseline}
+ruby rt{display:inline-flex;align-items:center;margin:0 .06em 0 .05em;font-family:var(--sans);font-size:.52em;line-height:1;color:var(--sub);letter-spacing:0;font-weight:400}
+ruby rt .zy-b{writing-mode:vertical-rl;text-orientation:upright;line-height:1.02}
+ruby rt .zy-t{margin-left:.04em;line-height:1}
+body.no-zhuyin ruby rt{display:none}
+.annot{background:none;border:0;padding:0;margin:0;font:inherit;letter-spacing:inherit;color:inherit;cursor:pointer;border-bottom:1.5px dotted var(--main);line-height:inherit}
+.annot:hover,.annot[aria-expanded="true"]{background:var(--soft)}
+.tr-btn{display:inline-flex;align-items:center;min-height:44px;margin-top:8px;padding:0 14px;border:1px solid var(--line);border-radius:6px;background:var(--paper);cursor:pointer;font-size:14px;color:var(--deep)}
+.tr-list{display:none;margin:12px 0 0;border-top:1px solid var(--line)}
+.tr-list.open{display:block}
+.tr-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:6px 18px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.tr-src{font-family:var(--serif);color:var(--deep)}
+.tr-txt{color:var(--ink)}
+#pop{position:fixed;z-index:50;max-width:min(320px,calc(100vw - 24px));background:var(--card);border:1px solid var(--line);border-top:3px solid var(--main);border-radius:6px;box-shadow:0 8px 24px rgba(41,38,33,.14);padding:12px 14px;font-size:15px;line-height:1.7;display:none}
+#pop.show{display:block}
+#pop b{display:block;font-family:var(--serif);color:var(--deep);font-size:17px;margin-bottom:2px}
+
+/* Tables & notes */
+.table-box{margin-bottom:18px}
+.table-box h3,.subhead{margin:0 0 10px;font-family:var(--serif);font-size:19px;color:var(--deep)}
+.data-table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;font-size:15px}
+.data-table th,.data-table td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.data-table th{background:var(--soft);color:var(--deep);font-weight:700;white-space:nowrap}
+.data-table td:first-child{font-family:var(--serif);font-weight:700;color:var(--deep)}
+.note,.trap{border-radius:6px;padding:14px 16px;margin:0 0 14px;font-size:15px}
+.note{background:var(--soft);border-left:4px solid var(--main)}
+.trap{background:#f7ebe7;border-left:4px solid var(--seal)}
+.note b.t,.trap b.t{display:block;margin-bottom:2px;color:var(--deep)}
+.trap b.t{color:var(--seal)}
+
+/* Explore */
+.explore-status{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:6px 0 14px;font-size:14px;color:var(--sub)}
+.explore-msg{min-height:1.8em;font-size:15px;color:var(--deep)}
+.ghost{min-height:44px;padding:0 16px;border:1px solid var(--line);border-radius:6px;background:var(--card);cursor:pointer;font-size:14px}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+.match .col-title{font-size:13px;letter-spacing:.12em;color:var(--sub);font-weight:700}
+.match .col{display:flex;flex-direction:column;gap:10px}
+.m-item{position:relative;min-height:52px;padding:10px 14px;border:1px solid var(--line);border-radius:6px;background:var(--card);text-align:left;cursor:pointer;line-height:1.55}
+.m-item.left{font-family:var(--serif);font-size:17px;color:var(--deep)}
+.m-item[aria-pressed="true"]{border-color:var(--main);box-shadow:inset 0 0 0 2px var(--main)}
+.m-item.done{background:var(--soft);border-color:var(--main);cursor:default}
+.m-item.done::before{content:attr(data-n);position:absolute;top:-8px;left:-8px;width:22px;height:22px;border-radius:50%;background:var(--main);color:#fff;font-size:12px;font-family:var(--sans);display:flex;align-items:center;justify-content:center}
+.m-item.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.pool{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.c-item{min-height:48px;padding:8px 14px;border:1px solid var(--line);border-radius:6px;background:var(--card);cursor:pointer;font-family:var(--serif);font-size:17px;color:var(--deep);text-align:left}
+.c-item[aria-pressed="true"]{border-color:var(--main);box-shadow:inset 0 0 0 2px var(--main)}
+.buckets{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.bucket{border:1px solid var(--line);border-radius:var(--r);background:var(--card);overflow:hidden}
+.bucket-btn{display:block;width:100%;min-height:48px;padding:10px 14px;border:0;border-bottom:1px solid var(--line);background:var(--soft);text-align:left;cursor:pointer;font-weight:700;color:var(--deep)}
+.bucket-btn small{display:block;font-weight:400;color:var(--sub);font-size:13px}
+.bucket ul{list-style:none;margin:0;padding:6px 14px 10px}
+.bucket li{padding:6px 0;border-bottom:1px dashed var(--line);font-family:var(--serif);color:var(--deep)}
+.bucket li:last-child{border-bottom:0}
+.bucket li small{display:block;font-family:var(--sans);font-size:13px;color:var(--sub)}
+
+/* Quiz */
+.q{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 20px 16px;margin-bottom:14px}
+.q-meta{display:flex;gap:12px;font-size:13px;color:var(--sub);margin-bottom:6px}
+.q-meta .tag{color:var(--main);font-weight:700}
+.q-stem{margin:0 0 12px;font-size:17px;line-height:1.8}
+.q-stem .blank{display:inline-block;min-width:4.5em;border-bottom:2px solid var(--main);text-align:center;color:var(--deep);font-weight:700;padding:0 4px}
+.opts{display:grid;gap:8px}
+.opts.chips{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;min-height:48px;padding:10px 14px;border:1px solid var(--line);border-radius:6px;background:var(--paper);text-align:left;cursor:pointer;line-height:1.6}
+.opt .k{flex:none;font-weight:700;color:var(--main)}
+.opt:hover:not([disabled]){border-color:var(--main)}
+.opt[disabled]{cursor:default}
+.opt.correct{background:#e8f0ea;border-color:var(--ok)}
+.opt.correct .k{color:var(--ok)}
+.opt.wrong{background:#f6e7e4;border-color:var(--ng)}
+.opt.wrong .k{color:var(--ng)}
+.opt.dim{opacity:.55}
+.explain{display:none;margin-top:12px;padding:12px 14px;border-radius:6px;background:var(--soft);font-size:15px}
+.explain.show{display:block}
+.explain .v{font-weight:700;margin-right:6px}
+.explain .v.ok{color:var(--ok)}
+.explain .v.ng{color:var(--ng)}
+.result{display:none;text-align:center;padding:26px 20px}
+.result.show{display:block}
+.result .big{font-family:var(--serif);font-size:40px;font-weight:900;color:var(--deep)}
+.primary{min-height:48px;padding:0 22px;border:0;border-radius:6px;background:var(--deep);color:#fff;cursor:pointer;font-size:15px;margin-top:10px}
+
+/* Related & footer */
+.related a{display:block;padding:14px 16px;border:1px solid var(--line);border-radius:var(--r);background:var(--card);text-decoration:none;margin-bottom:10px}
+.related a b{font-family:var(--serif);font-size:18px;color:var(--deep)}
+.related a span{display:block;font-size:14px;color:var(--sub)}
+footer{border-top:1px solid var(--line);padding:22px 0 40px;font-size:13px;color:var(--sub);line-height:1.7}
+
+@media (max-width:640px){
+  .card,.q{padding:18px 16px 14px}
+  .src{font-size:19px;line-height:2.3}
+  .facts{grid-template-columns:1fr;gap:0}
+  .facts dt{margin-top:8px}
+  .tr-row{grid-template-columns:1fr;gap:2px}
+  .match{grid-template-columns:1fr}
+  .match .col.right{margin-top:8px}
+  .data-table thead{display:none}
+  .data-table,.data-table tbody,.data-table tr,.data-table td{display:block;width:100%}
+  .data-table tr{border-bottom:1px solid var(--line);padding:6px 0}
+  .data-table td{border:0;padding:4px 12px}
+  .data-table td::before{content:attr(data-label);display:block;font-size:12px;color:var(--sub);font-family:var(--sans);font-weight:400}
+  .controls .score{margin-left:0;width:100%;text-align:right}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+<!-- ===== ENGINE:STYLE END ===== -->
+</head>
+<body>
+<div id="app"></div>
+<div id="pop" role="dialog" aria-live="polite"></div>
+
+<!-- ===== LESSON DATA START｜本篇資料：新增講義時只改這一段（JSON 格式，規則見 CLAUDE.md §7） ===== -->
+<script type="application/json" id="lesson-data">
+{
+  "slug": "guwen-loushiming",
+  "type": "guwen",
+  "subject": "國文",
+  "title": "陋室銘",
+  "dynasty": "唐",
+  "author": "劉禹錫",
+  "source": "",
+  "grade": "八年級下學期",
+  "textbook": "翰林版國文第四冊（八年級下學期）；康軒、南一等版本也有收錄，課次依學生使用的課本為準",
+  "watermark": "陋",
+  "palette": {
+    "main": "#526b48",
+    "deep": "#36492f",
+    "soft": "#e8eee3",
+    "gold": "#b08a4e"
+  },
+  "lead": "一間簡陋的小屋，憑什麼不簡陋？這篇八十一字的銘文回答：屋子好不好，不看大小華麗，要看住在裡面的人。全文隔句押韻，先用山水起頭，再寫陋室的景、人、事，最後請出諸葛亮、揚雄和孔子作結。",
+  "card": {
+    "order": 20,
+    "desc": "八十一字的居室銘文：練習類比起興、賓語提前與韻腳判斷。",
+    "modes": [
+      "分類點選",
+      "填空克漏字",
+      "即時回饋單選"
+    ]
+  },
+  "background": {
+    "kicker": "BACKGROUND",
+    "title": "苔痕草色裡的德馨",
+    "facts": [
+      [
+        "作者",
+        "劉禹錫（772－842），字夢得，唐代文學家。參與政治改革失敗後，長年被貶到外地任官。詩文豪健，白居易稱他「詩豪」。"
+      ],
+      [
+        "作者小提醒",
+        "課本題為劉禹錫作；不過《新唐書．崔沔傳》也記載崔沔「嘗作《陋室銘》以見志」，北宋已有人質疑作者歸屬。考試以課本說法為準。"
+      ],
+      [
+        "出處",
+        "康軒版課本標為選自《全唐文》，也有講義寫作《劉禹錫集》，依學生課本為準。"
+      ],
+      [
+        "文體",
+        "**銘**：原本刻在器物上，用來警惕自己或稱述功德的文字，篇幅短、多押韻。本文是為自己的居室所寫的銘。"
+      ],
+      [
+        "韻腳",
+        "名、靈、馨、青、丁、經、形、亭，**隔句押韻、一韻到底**（「馨」今讀ㄒㄧㄣ，在古代韻書中和青、經、亭同韻）。"
+      ]
+    ],
+    "chain": [
+      "山水有仙龍則名靈",
+      "陋室有德則不陋",
+      "以安貧樂道的君子自許"
+    ],
+    "quote": {
+      "text": "斯是陋室，惟吾德馨",
+      "note": "全文的主旨句：屋子雖然簡陋，因為主人品德美好，就不覺得簡陋。"
+    }
+  },
+  "text": {
+    "kicker": "TEXT",
+    "title": "階上苔綠，簾裡草青",
+    "intro": "虛線底的詞可以點開注釋；下方的「逐句語譯」會列出原句和白話。",
+    "paragraphs": [
+      {
+        "label": "全文",
+        "sentences": [
+          {
+            "src": "山不在高，有仙則[名]。",
+            "tr": "山不在於高，有仙人居住就會出名。"
+          },
+          {
+            "src": "水不在深，有龍則[靈]。",
+            "tr": "水不在於深，有龍潛藏就會顯得有靈氣。"
+          },
+          {
+            "src": "[{斯:ㄙ}]是[{陋:ㄌㄡˋ}室]，[惟吾德{馨:ㄒㄧㄣ}]。",
+            "tr": "這是一間簡陋的屋子，只因為我的品德美好，就不覺得簡陋。"
+          },
+          {
+            "src": "[{苔:ㄊㄞˊ}痕上階綠]，[草色入簾青]。",
+            "tr": "青苔蔓延到臺階上，一片碧綠；草色映進竹簾，一片青翠。"
+          },
+          {
+            "src": "談笑有[{鴻:ㄏㄨㄥˊ}{儒:ㄖㄨˊ}]，往來無[白丁]。",
+            "tr": "在這裡談笑的都是學問淵博的人，來往的沒有不學無術的人。"
+          },
+          {
+            "src": "可以[{調:ㄊㄧㄠˊ}素琴]，閱[金經]。",
+            "tr": "可以彈奏樸素的琴，閱讀佛經。"
+          },
+          {
+            "src": "無[絲竹]之[亂耳]，無[案{牘:ㄉㄨˊ}]之[勞形]。",
+            "tr": "沒有嘈雜的音樂擾亂耳朵，也沒有官府公文勞累身體。"
+          },
+          {
+            "src": "[南陽諸葛{廬:ㄌㄨˊ}]，[西蜀子雲亭]。",
+            "tr": "這就像南陽諸葛亮的草廬、西蜀揚子雲的居所。"
+          },
+          {
+            "src": "孔子云：「[何陋之有]？」",
+            "tr": "孔子說：「有什麼簡陋的呢？」"
+          }
+        ],
+        "notes": {
+          "名": "出名。本是名詞，這裡當動詞用。",
+          "靈": "有靈氣、顯得神奇。",
+          "斯": "此、這。音ㄙ。",
+          "陋室": "簡陋的屋子。陋，音ㄌㄡˋ。",
+          "惟吾德馨": "只因為我的品德美好。惟：只；馨：散布很遠的香氣，比喻美好的德行。",
+          "苔痕上階綠": "青苔蔓延到臺階上，一片碧綠。上：蔓延上去，這裡當動詞。",
+          "草色入簾青": "草的顏色映進簾子，一片青翠。",
+          "鴻儒": "學問淵博的讀書人。鴻：大。",
+          "白丁": "沒有功名的平民，這裡偏指沒有學問的人。",
+          "調素琴": "彈奏不加裝飾的琴。調，音ㄊㄧㄠˊ，彈奏；素：樸素、不加裝飾。",
+          "金經": "指佛經；一說泛指珍貴的經書。",
+          "絲竹": "絲指弦樂器，竹指管樂器，借指音樂。",
+          "亂耳": "擾亂耳朵。",
+          "案牘": "官府的公文。牘，音ㄉㄨˊ。",
+          "勞形": "使身體勞累。形：身體。",
+          "南陽諸葛廬": "諸葛亮出仕前在南陽隱居時住的草屋。",
+          "西蜀子雲亭": "西漢揚雄（字子雲）在蜀地的居所。揚雄是蜀郡成都人，以學問文章著稱。",
+          "何陋之有": "就是「有何陋」：有什麼簡陋的呢？出自《論語．子罕》，原句是「君子居之，何陋之有？」"
+        }
+      }
+    ]
+  },
+  "words": {
+    "kicker": "WORDS",
+    "title": "陋室裡的字與句",
+    "tables": [
+      {
+        "caption": "一字多義",
+        "head": [
+          "字",
+          "本文用法",
+          "其他用法"
+        ],
+        "rows": [
+          [
+            "名",
+            "有仙則名：**出名**（動詞）",
+            "名字、名稱（名詞）"
+          ],
+          [
+            "上",
+            "苔痕上階綠：**蔓延上**（動詞）",
+            "上面（方位詞）"
+          ],
+          [
+            "調",
+            "{調:ㄊㄧㄠˊ}素琴：**彈奏**",
+            "調動（ㄉㄧㄠˋ）：調派"
+          ],
+          [
+            "形",
+            "無案牘之勞形：**身體**",
+            "形狀、情形"
+          ],
+          [
+            "素",
+            "調素琴：**不加裝飾的**",
+            "平素：平常"
+          ]
+        ]
+      },
+      {
+        "caption": "兩篇對照：愛蓮說 × 陋室銘",
+        "head": [
+          "比較",
+          "愛蓮說",
+          "陋室銘"
+        ],
+        "rows": [
+          [
+            "作者／朝代",
+            "周敦頤／北宋",
+            "劉禹錫／唐（作者歸屬有爭議）"
+          ],
+          [
+            "文體",
+            "說：說明事理",
+            "銘：警惕自己、多押韻"
+          ],
+          [
+            "託物",
+            "蓮",
+            "陋室"
+          ],
+          [
+            "君子形象",
+            "潔身自好、不慕富貴",
+            "安貧樂道、以德行自持"
+          ],
+          [
+            "賓語提前",
+            "菊之愛＝愛菊",
+            "何陋之有＝有何陋"
+          ]
+        ]
+      }
+    ],
+    "boxes": [
+      {
+        "kind": "note",
+        "title": "「何陋之有」藏起了半句話",
+        "text": "《論語》原句是「君子居之，何陋之有？」作者只引後半句，把「君子居之」藏起來，暗示**自己就是住在陋室裡的君子**。"
+      },
+      {
+        "kind": "trap",
+        "title": "易錯：「白丁」的重點在學問",
+        "text": "白丁原指沒有功名的平民，這裡偏重「沒有學問的人」。整句是在說主人交往的都是有學問的朋友，重點在**交友的志趣**。"
+      }
+    ]
+  },
+  "explore": {
+    "type": "classify",
+    "kicker": "EXPLORE",
+    "title": "陋室不陋的五個理由",
+    "intro": "把每一句放回它在文章裡的位置：先點一句，再點它所屬的類別。主旨句「斯是陋室，惟吾德馨」先不放進來。",
+    "categories": [
+      {
+        "name": "起興類比",
+        "desc": "用山水帶出陋室"
+      },
+      {
+        "name": "陋室之景",
+        "desc": "屋外的自然景色"
+      },
+      {
+        "name": "陋室之人",
+        "desc": "來往的朋友"
+      },
+      {
+        "name": "陋室之事",
+        "desc": "在屋裡做什麼、不必做什麼"
+      },
+      {
+        "name": "以古證今",
+        "desc": "引古人、古書作結"
+      }
+    ],
+    "items": [
+      {
+        "text": "山不在高，有仙則名",
+        "cat": 0,
+        "why": "山因仙人而出名",
+        "hint": "這句還沒寫到屋子。"
+      },
+      {
+        "text": "水不在深，有龍則靈",
+        "cat": 0,
+        "why": "和上句一起類比：陋室因德而不陋",
+        "hint": "這句還沒寫到屋子。"
+      },
+      {
+        "text": "苔痕上階綠，草色入簾青",
+        "cat": 1,
+        "why": "屋外青苔與草色，清幽自然",
+        "hint": "這句寫的是顏色和景物。"
+      },
+      {
+        "text": "談笑有鴻儒，往來無白丁",
+        "cat": 2,
+        "why": "交往的都是有學問的人",
+        "hint": "鴻儒、白丁都是人。"
+      },
+      {
+        "text": "可以調素琴，閱金經",
+        "cat": 3,
+        "why": "在屋裡做的雅事",
+        "hint": "調琴、讀經是在做什麼？"
+      },
+      {
+        "text": "無絲竹之亂耳，無案牘之勞形",
+        "cat": 3,
+        "why": "生活中不必面對的俗務",
+        "hint": "這句說的是生活裡沒有哪些事。"
+      },
+      {
+        "text": "南陽諸葛廬，西蜀子雲亭",
+        "cat": 4,
+        "why": "以諸葛亮、揚雄的居所自比",
+        "hint": "諸葛亮、揚雄都是前代人物。"
+      },
+      {
+        "text": "孔子云：「何陋之有？」",
+        "cat": 4,
+        "why": "引《論語》作結",
+        "hint": "這句引用的是誰說的話？"
+      }
+    ],
+    "done": "八句都歸位了：起興類比 → 景 → 人 → 事 → 以古證今，這就是〈陋室銘〉的結構。"
+  },
+  "quiz": {
+    "kicker": "QUIZ",
+    "title": "閱金經：十題自我檢測",
+    "intro": "點選答案後會立刻顯示對錯與詳解，選項順序每題不同。",
+    "items": [
+      {
+        "id": "q1",
+        "tag": "字音",
+        "type": "choice",
+        "q": "下列「」中的字，哪一個注音正確？",
+        "options": [
+          "案「牘」：ㄉㄨˊ",
+          "「調」素琴：ㄉㄧㄠˋ",
+          "惟吾德「馨」：ㄒㄧㄥ",
+          "談笑有鴻「儒」：ㄖㄨ"
+        ],
+        "answer": 0,
+        "explain": "牘音ㄉㄨˊ，指公文。調在此是彈奏，讀ㄊㄧㄠˊ；馨讀ㄒㄧㄣ（是ㄣ不是ㄥ）；儒讀ㄖㄨˊ，是第二聲。"
+      },
+      {
+        "id": "q2",
+        "tag": "詞法",
+        "type": "choice",
+        "q": "「有仙則『名』」的「名」本是名詞，這裡當動詞用。下列「」中的字，哪一個也是名詞當動詞用？",
+        "options": [
+          "不『蔓』不枝（愛蓮說）",
+          "草色入簾『青』",
+          "可以調素『琴』",
+          "往來無白『丁』"
+        ],
+        "answer": 0,
+        "explain": "「名」在此是「出名」。〈愛蓮說〉的「不蔓」是「不生藤蔓」，蔓也是名詞當動詞用。其餘三個都保持原本的詞性。"
+      },
+      {
+        "id": "q3",
+        "tag": "文法",
+        "type": "cloze",
+        "q": "「何陋之有」是賓語提前的句子，還原成一般語序是「＿＿」。",
+        "options": [
+          "有何陋",
+          "何有陋",
+          "陋何有",
+          "有陋何"
+        ],
+        "answer": 0,
+        "explain": "受詞「何陋」移到動詞「有」前面，中間加「之」強調；還原成「有何陋」，意思是「有什麼簡陋的呢？」和〈愛蓮說〉的「菊之愛」是同一種句式。"
+      },
+      {
+        "id": "q4",
+        "tag": "寫法",
+        "type": "choice",
+        "q": "開頭「山不在高，有仙則名；水不在深，有龍則靈」主要的作用是什麼？",
+        "options": [
+          "以山水類比，帶出陋室因主人德行而不陋",
+          "誇大山水的高深，表示陋室位置偏遠",
+          "描寫陋室四周的真實景色",
+          "說明作者喜愛求仙問道"
+        ],
+        "answer": 0,
+        "explain": "山水的名氣不在高深，而在有沒有仙、龍；屋子好不好，也不在華麗，而在主人的德行。這是**類比起興**，用來引出「斯是陋室，惟吾德馨」。"
+      },
+      {
+        "id": "q5",
+        "tag": "文意",
+        "type": "choice",
+        "q": "「談笑有鴻儒，往來無白丁」主要表現什麼？",
+        "options": [
+          "主人交往的都是有學問的朋友，志趣高雅",
+          "主人家中天天舉辦熱鬧的宴會",
+          "主人只和做官的人來往",
+          "主人不喜歡和任何人說話"
+        ],
+        "answer": 0,
+        "explain": "鴻儒是博學的人，白丁在這裡偏指沒有學問的人。兩句一正一反互相補充，說明來往的朋友都有學問，表現主人**交友的志趣**。"
+      },
+      {
+        "id": "q6",
+        "tag": "韻文",
+        "type": "choice",
+        "q": "〈陋室銘〉隔句押韻。下列哪一個字**不是**本文的韻腳？",
+        "options": [
+          "廬",
+          "靈",
+          "青",
+          "經"
+        ],
+        "answer": 0,
+        "explain": "韻腳是名、靈、馨、青、丁、經、形、亭。「南陽諸葛廬，西蜀子雲亭」押韻的是後句的「亭」；「廬」在前句句末，不是韻腳。"
+      },
+      {
+        "id": "q7",
+        "tag": "情境應用",
+        "type": "choice",
+        "q": "阿哲的房間很小，家具也很舊，但他說：「只要我在這裡認真讀書、做人正直，房間大小一點也不重要。」最貼近他想法的句子是？",
+        "options": [
+          "斯是陋室，惟吾德馨",
+          "無案牘之勞形",
+          "往來無白丁",
+          "草色入簾青"
+        ],
+        "answer": 0,
+        "explain": "「斯是陋室，惟吾德馨」：屋子雖然簡陋，因為主人品德美好就不覺得簡陋，正是阿哲的意思。其他選項只寫到陋室生活的一部分。"
+      },
+      {
+        "id": "q8",
+        "tag": "文體",
+        "type": "cloze",
+        "q": "「銘」原本是刻在器物上，用來＿＿或稱述功德的文字，篇幅短小、多押韻。",
+        "options": [
+          "警惕自己",
+          "記錄遊覽經過",
+          "說明事物的道理",
+          "抒發離別之情"
+        ],
+        "answer": 0,
+        "explain": "銘的作用是警戒自己或稱述功德。〈愛蓮說〉的「說」才偏重說明事理；記錄遊覽多用「記」體。"
+      },
+      {
+        "id": "q9",
+        "tag": "結構",
+        "type": "choice",
+        "q": "下列哪一項最符合本文的寫作順序？",
+        "options": [
+          "山水類比 → 陋室的景、人、事 → 引古人與孔子作結",
+          "陋室的建造過程 → 搬家的原因 → 鄰居的評價",
+          "孔子的生平 → 諸葛亮的事蹟 → 揚雄的著作",
+          "官場的辛苦 → 辭官回家 → 歸隱田園"
+        ],
+        "answer": 0,
+        "explain": "開頭用山水起興，中段依序寫屋外景色、往來朋友、日常活動，最後以諸葛亮、揚雄的居所自比，並引孔子的話收尾。"
+      },
+      {
+        "id": "q10",
+        "tag": "主旨",
+        "type": "choice",
+        "q": "本文主旨最接近下列何者？",
+        "options": [
+          "表達安貧樂道、以德行自持的生活態度",
+          "抱怨被貶官後住處太過簡陋",
+          "勸人隱居山林、不要讀書做官",
+          "介紹南陽和西蜀的名勝古蹟"
+        ],
+        "answer": 0,
+        "explain": "作者借「陋室」說自己：住處雖然簡樸，但有清幽的環境、有學問的朋友、高雅的生活，又遠離俗務，所以「何陋之有」。重點在**安貧樂道、以德自持**。"
+      }
+    ]
+  },
+  "related": [
+    {
+      "slug": "guwen-ailianshuo",
+      "title": "愛蓮說",
+      "why": "同樣是託物言志、寫君子品格；也能一起練「菊之愛」這類賓語提前句。"
+    }
+  ],
+  "footer": "陋室銘．互動國文講義｜原文與香港教育局普通話朗讀材料〈陋室銘〉所錄原文逐字核對；注釋、語譯為本講義自行整理。"
+}
+</script>
+<!-- ===== LESSON DATA END ===== -->
+
+<!-- ===== ENGINE:SCRIPT START｜共用程式，單篇講義不要改這一段 ===== -->
+<script>
+(function () {
+  'use strict';
+  var D = JSON.parse(document.getElementById('lesson-data').textContent);
+  var app = document.getElementById('app');
+  var pop = document.getElementById('pop');
+
+  /* ---------- 小工具 ---------- */
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  // 注音：本體直排，聲調（ˊˇˋ）放右側；輕聲（˙）在最上方
+  function zyHtml(z) {
+    var t = /[ˊˇˋ]$/.test(z) ? z.slice(-1) : '';
+    var b = t ? z.slice(0, -1) : z;
+    return '<span class="zy-b">' + esc(b) + '</span>' + (t ? '<span class="zy-t">' + t + '</span>' : '');
+  }
+  function rubyHtml(base, z) { return '<ruby>' + esc(base) + '<rt>' + zyHtml(z) + '</rt></ruby>'; }
+  // 說明文字用：**粗體**、{字:注音}
+  function rich(s) {
+    return esc(s)
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/\{([^:{}]+):([^{}]+)\}/g, function (_, a, b) { return rubyHtml(a, b); });
+  }
+  function plain(s) { return String(s).replace(/\{([^:{}]+):[^{}]+\}/g, '$1'); }
+  function seeded(str) {
+    var h = 1779033703 ^ str.length;
+    for (var i = 0; i < str.length; i++) { h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; }
+    return function () {
+      h = Math.imul(h ^ h >>> 16, 2246822507); h = Math.imul(h ^ h >>> 13, 3266489909); h ^= h >>> 16;
+      return (h >>> 0) / 4294967296;
+    };
+  }
+  function shuffle(arr, key) {
+    var a = arr.slice(), rnd = seeded(key);
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  function head(sec) {
+    var w = el('div', 'sec-head');
+    w.appendChild(el('div', 'kicker', sec.kicker || ''));
+    w.appendChild(el('h2', null, sec.title || ''));
+    w.appendChild(el('div', 'rule'));
+    if (sec.intro) { var p = el('p'); p.innerHTML = rich(sec.intro); w.appendChild(p); }
+    return w;
+  }
+  function section(id, sec) {
+    var s = el('section', 'sec'); s.id = id;
+    s.appendChild(head(sec));
+    return s;
+  }
+
+  /* ---------- 色盤 ---------- */
+  var pal = D.palette || {};
+  ['main', 'deep', 'soft', 'gold'].forEach(function (k) {
+    if (pal[k]) document.documentElement.style.setProperty('--' + k, pal[k]);
+  });
+  document.title = D.title + '｜互動國文講義';
+
+  /* ---------- Hero ---------- */
+  var hero = el('header', 'hero');
+  var hw = el('div', 'wrap');
+  var back = el('a', 'back', '← 會考複習講義庫'); back.href = '../../';
+  hw.appendChild(back);
+  hw.appendChild(el('p', 'eyebrow', '互動國文講義'));
+  hw.appendChild(el('h1', null, D.title));
+  hw.appendChild(el('p', 'byline', [D.dynasty, D.author, D.source].filter(Boolean).join('．')));
+  var lead = el('p', 'lead'); lead.innerHTML = rich(D.lead || ''); hw.appendChild(lead);
+  var mark = el('div', 'mark', D.watermark || ''); mark.setAttribute('aria-hidden', 'true');
+  hero.appendChild(mark); hero.appendChild(hw);
+  app.appendChild(hero);
+
+  /* ---------- Sticky controls ---------- */
+  var ctr = el('div', 'controls'); var cw = el('div', 'wrap'); ctr.appendChild(cw);
+  function toggle(label, on, fn) {
+    var b = el('button', 'toggle'); b.type = 'button';
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    b.appendChild(el('span', 'dot')); b.appendChild(el('span', null, label));
+    b.addEventListener('click', function () {
+      var v = b.getAttribute('aria-pressed') !== 'true';
+      b.setAttribute('aria-pressed', v ? 'true' : 'false'); fn(v);
+    });
+    return b;
+  }
+  cw.appendChild(toggle('注音', true, function (v) { document.body.classList.toggle('no-zhuyin', !v); }));
+  cw.appendChild(toggle('全文語譯', false, function (v) {
+    document.querySelectorAll('.tr-list').forEach(function (l) { l.classList.toggle('open', v); });
+    document.querySelectorAll('.tr-btn').forEach(function (b) { b.setAttribute('aria-expanded', v ? 'true' : 'false'); b.textContent = v ? '收起語譯' : '逐句語譯'; });
+  }));
+  var scoreBox = el('div', 'score'); scoreBox.setAttribute('aria-live', 'polite');
+  cw.appendChild(scoreBox);
+  app.appendChild(ctr);
+
+  var main = el('main', 'wrap'); app.appendChild(main);
+
+  /* ---------- 寫作背景 ---------- */
+  if (D.background) {
+    var B = D.background, s1 = section('background', B);
+    var c = el('div', 'card bg-card');
+    var dl = el('dl', 'facts');
+    (B.facts || []).forEach(function (f) {
+      dl.appendChild(el('dt', null, f[0]));
+      var dd = el('dd'); dd.innerHTML = rich(f[1]); dl.appendChild(dd);
+    });
+    c.appendChild(dl);
+    if (B.chain && B.chain.length) {
+      var ch = el('div', 'chain');
+      B.chain.forEach(function (t, i) {
+        if (i) { var a = el('span', 'arrow', '→'); a.setAttribute('aria-hidden', 'true'); ch.appendChild(a); }
+        ch.appendChild(el('span', 'step', t));
+      });
+      c.appendChild(ch);
+    }
+    if (B.quote) {
+      var q = el('blockquote', 'quote'); q.innerHTML = rich(B.quote.text) + (B.quote.note ? '<small>' + rich(B.quote.note) + '</small>' : '');
+      c.appendChild(q);
+    }
+    s1.appendChild(c); main.appendChild(s1);
+  }
+
+  /* ---------- 課文與注釋 ---------- */
+  // 原文標記：[詞] = 可點注釋（注釋寫在該段 notes，鍵為去掉注音後的文字）；{字:注音} = 注音
+  function inline(src, notes, into) {
+    var re = /\[([^\]]+)\]|\{([^:{}]+):([^{}]+)\}/g, last = 0, m;
+    while ((m = re.exec(src))) {
+      if (m.index > last) into.appendChild(document.createTextNode(src.slice(last, m.index)));
+      if (m[1] != null) {
+        var key = plain(m[1]), b = el('button', 'annot'); b.type = 'button';
+        b.innerHTML = rich(m[1]);
+        b.dataset.term = key; b.dataset.note = (notes && notes[key]) || '';
+        b.setAttribute('aria-expanded', 'false');
+        if (!b.dataset.note && window.console) console.warn('缺少注釋：' + key);
+        into.appendChild(b);
+      } else {
+        var r = el('span'); r.innerHTML = rubyHtml(m[2], m[3]); into.appendChild(r.firstChild);
+      }
+      last = re.lastIndex;
+    }
+    if (last < src.length) into.appendChild(document.createTextNode(src.slice(last)));
+  }
+  if (D.text) {
+    var T = D.text, s2 = section('text', T);
+    T.paragraphs.forEach(function (p, i) {
+      var c = el('article', 'card');
+      var ph = el('div', 'para-head'); ph.appendChild(el('span', 'num', String(i + 1)));
+      ph.appendChild(el('span', null, p.label || ('第 ' + (i + 1) + ' 段')));
+      c.appendChild(ph);
+      var src = el('p', 'src');
+      p.sentences.forEach(function (s) { inline(s.src, p.notes, src); });
+      c.appendChild(src);
+      var tb = el('button', 'tr-btn', '逐句語譯'); tb.type = 'button'; tb.setAttribute('aria-expanded', 'false');
+      var list = el('div', 'tr-list'); list.id = 'tr-' + i; tb.setAttribute('aria-controls', list.id);
+      p.sentences.forEach(function (s) {
+        var row = el('div', 'tr-row');
+        var a = el('div', 'tr-src'); a.innerHTML = rich(s.src.replace(/\[|\]/g, ''));
+        var b = el('div', 'tr-txt'); b.innerHTML = rich(s.tr);
+        row.appendChild(a); row.appendChild(b); list.appendChild(row);
+      });
+      tb.addEventListener('click', function () {
+        var open = !list.classList.contains('open');
+        list.classList.toggle('open', open); tb.setAttribute('aria-expanded', open ? 'true' : 'false');
+        tb.textContent = open ? '收起語譯' : '逐句語譯';
+      });
+      c.appendChild(tb); c.appendChild(list);
+      s2.appendChild(c);
+    });
+    main.appendChild(s2);
+  }
+
+  /* ---------- 注釋提示框 ---------- */
+  var openBtn = null, openY = 0;
+  function closePop() { pop.classList.remove('show'); if (openBtn) openBtn.setAttribute('aria-expanded', 'false'); openBtn = null; }
+  function placePop(b) {
+    var r = b.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight;
+    var left = Math.min(Math.max(12, r.left), window.innerWidth - pw - 12);
+    var top = r.bottom + 8; if (top + ph > window.innerHeight - 8) top = Math.max(8, r.top - ph - 8);
+    pop.style.left = left + 'px'; pop.style.top = top + 'px';
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.annot');
+    if (!b) { if (!e.target.closest || !e.target.closest('#pop')) closePop(); return; }
+    if (openBtn === b) { closePop(); return; }
+    closePop();
+    pop.innerHTML = '<b>' + esc(b.dataset.term) + '</b>' + rich(b.dataset.note || '（注釋待補）');
+    pop.classList.add('show'); placePop(b);
+    b.setAttribute('aria-expanded', 'true'); openBtn = b; openY = window.scrollY;
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closePop(); });
+  // 小幅捲動時讓提示框跟著詞走；捲離較遠才關閉
+  window.addEventListener('scroll', function () {
+    if (!openBtn) return;
+    if (Math.abs(window.scrollY - openY) > 120) closePop(); else placePop(openBtn);
+  }, { passive: true });
+  window.addEventListener('resize', closePop);
+
+  /* ---------- 字詞整理 ---------- */
+  if (D.words) {
+    var W = D.words, s3 = section('words', W);
+    (W.tables || []).forEach(function (t) {
+      var box = el('div', 'table-box');
+      if (t.caption) box.appendChild(el('h3', null, t.caption));
+      var tbl = el('table', 'data-table'), th = el('thead'), tr = el('tr');
+      t.head.forEach(function (x) { tr.appendChild(el('th', null, x)); });
+      th.appendChild(tr); tbl.appendChild(th);
+      var tb = el('tbody');
+      t.rows.forEach(function (row) {
+        var r = el('tr');
+        row.forEach(function (cell, ci) { var td = el('td'); td.innerHTML = rich(cell); td.setAttribute('data-label', t.head[ci]); r.appendChild(td); });
+        tb.appendChild(r);
+      });
+      tbl.appendChild(tb); box.appendChild(tbl); s3.appendChild(box);
+    });
+    (W.boxes || []).forEach(function (bx) {
+      var d = el('div', bx.kind === 'trap' ? 'trap' : 'note');
+      d.innerHTML = '<b class="t">' + esc(bx.title) + '</b>' + rich(bx.text);
+      s3.appendChild(d);
+    });
+    main.appendChild(s3);
+  }
+
+  /* ---------- 量身探索 ---------- */
+  function exploreMatch(X, host) {
+    var st = el('div', 'explore-status'), msg = el('div', 'explore-msg'); msg.setAttribute('aria-live', 'polite');
+    var prog = el('span'), reset = el('button', 'ghost', '重新配對'); reset.type = 'button';
+    st.appendChild(prog); st.appendChild(reset);
+    var grid = el('div', 'match'), L = el('div', 'col left'), R = el('div', 'col right');
+    L.appendChild(el('div', 'col-title', X.left)); R.appendChild(el('div', 'col-title', X.right));
+    grid.appendChild(L); grid.appendChild(R);
+    host.appendChild(st); host.appendChild(msg); host.appendChild(grid);
+    var sel = null, done = 0, count = 0, btns = [];
+    function mk(text, side, idx) {
+      var b = el('button', 'm-item ' + side); b.type = 'button'; b.innerHTML = rich(text);
+      b.dataset.side = side; b.dataset.idx = idx; b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', function () { pick(b); }); btns.push(b); return b;
+    }
+    function build() {
+      btns = []; sel = null; done = 0; count = 0;
+      L.querySelectorAll('.m-item').forEach(function (n) { n.remove(); });
+      R.querySelectorAll('.m-item').forEach(function (n) { n.remove(); });
+      X.pairs.forEach(function (p, i) { L.appendChild(mk(p[0], 'left', i)); });
+      shuffle(X.pairs.map(function (p, i) { return i; }), D.slug + '-match').forEach(function (i) { R.appendChild(mk(X.pairs[i][1], 'right', i)); });
+      prog.textContent = '已配對 0 / ' + X.pairs.length; msg.textContent = X.hint || '先點左邊一項，再點右邊對應的一項。';
+    }
+    function pick(b) {
+      if (b.classList.contains('done')) return;
+      if (!sel || sel.dataset.side === b.dataset.side) {
+        if (sel) sel.setAttribute('aria-pressed', 'false');
+        sel = (sel === b) ? null : b; if (sel) sel.setAttribute('aria-pressed', 'true'); return;
+      }
+      if (sel.dataset.idx === b.dataset.idx) {
+        count++; [sel, b].forEach(function (n) { n.classList.add('done'); n.setAttribute('aria-pressed', 'false'); n.dataset.n = count; n.setAttribute('aria-disabled', 'true'); });
+        done++; prog.textContent = '已配對 ' + done + ' / ' + X.pairs.length;
+        var why = X.pairs[+b.dataset.idx][2]; msg.innerHTML = why ? '配對成功：' + rich(why) : '配對成功。';
+        if (done === X.pairs.length) msg.innerHTML = rich(X.done || '全部配對完成！');
+      } else {
+        [sel, b].forEach(function (n) { n.classList.remove('shake'); void n.offsetWidth; n.classList.add('shake'); n.setAttribute('aria-pressed', 'false'); });
+        msg.textContent = '這兩項不是一組，再看一次字面意思。';
+      }
+      sel = null;
+    }
+    reset.addEventListener('click', build); build();
+  }
+  function exploreClassify(X, host) {
+    var st = el('div', 'explore-status'), msg = el('div', 'explore-msg'); msg.setAttribute('aria-live', 'polite');
+    var prog = el('span'), reset = el('button', 'ghost', '重新分類'); reset.type = 'button';
+    st.appendChild(prog); st.appendChild(reset);
+    var pool = el('div', 'pool'), bk = el('div', 'buckets');
+    host.appendChild(st); host.appendChild(pool); host.appendChild(msg); host.appendChild(bk);
+    var sel = null, done = 0, lists = [];
+    function build() {
+      pool.innerHTML = ''; bk.innerHTML = ''; lists = []; sel = null; done = 0;
+      X.categories.forEach(function (c, ci) {
+        var box = el('div', 'bucket'), btn = el('button', 'bucket-btn'); btn.type = 'button';
+        btn.innerHTML = esc(c.name) + (c.desc ? '<small>' + rich(c.desc) + '</small>' : '');
+        btn.addEventListener('click', function () { drop(ci); });
+        var ul = el('ul'); lists.push(ul); box.appendChild(btn); box.appendChild(ul); bk.appendChild(box);
+      });
+      shuffle(X.items.map(function (x, i) { return i; }), D.slug + '-classify').forEach(function (i) {
+        var b = el('button', 'c-item'); b.type = 'button'; b.innerHTML = rich(X.items[i].text); b.dataset.i = i; b.setAttribute('aria-pressed', 'false');
+        b.addEventListener('click', function () { if (sel) sel.setAttribute('aria-pressed', 'false'); sel = (sel === b) ? null : b; if (sel) sel.setAttribute('aria-pressed', 'true'); });
+        pool.appendChild(b);
+      });
+      prog.textContent = '已分類 0 / ' + X.items.length; msg.textContent = X.hint || '先點一句，再點它所屬的類別。';
+    }
+    function drop(ci) {
+      if (!sel) { msg.textContent = '先點上方的一句，再選類別。'; return; }
+      var it = X.items[+sel.dataset.i];
+      if (it.cat === ci) {
+        var li = el('li'); li.innerHTML = rich(it.text) + (it.why ? '<small>' + rich(it.why) + '</small>' : '');
+        lists[ci].appendChild(li); sel.remove(); sel = null; done++;
+        prog.textContent = '已分類 ' + done + ' / ' + X.items.length;
+        msg.innerHTML = done === X.items.length ? rich(X.done || '全部分類完成！') : '放對了。';
+      } else {
+        sel.classList.remove('shake'); void sel.offsetWidth; sel.classList.add('shake');
+        msg.innerHTML = '不是這一類。' + (it.hint ? '提示：' + rich(it.hint) : '再讀一次這句在寫什麼。');
+      }
+    }
+    reset.addEventListener('click', build); build();
+  }
+  if (D.explore) {
+    var X = D.explore, s4 = section('explore', X), host = el('div', 'card');
+    if (X.type === 'match') exploreMatch(X, host);
+    else if (X.type === 'classify') exploreClassify(X, host);
+    s4.appendChild(host); main.appendChild(s4);
+  }
+
+  /* ---------- 綜合自我測驗 ---------- */
+  var Q = D.quiz && D.quiz.items || [], right = 0, answered = 0;
+  function updateScore() {
+    scoreBox.innerHTML = Q.length ? '測驗　答對 <b>' + right + '</b>｜已作答 ' + answered + ' / ' + Q.length : '';
+  }
+  if (Q.length) {
+    var s5 = section('quiz', D.quiz), box = el('div'), res = el('div', 'card result');
+    s5.appendChild(box); s5.appendChild(res); main.appendChild(s5);
+    var KEYS = ['A', 'B', 'C', 'D', 'E'];
+    function renderQuiz() {
+      box.innerHTML = ''; right = 0; answered = 0; res.classList.remove('show'); updateScore();
+      Q.forEach(function (it, qi) {
+        var c = el('div', 'q'); c.id = 'q-' + it.id;
+        var meta = el('div', 'q-meta');
+        meta.appendChild(el('span', null, '第 ' + (qi + 1) + ' 題 / ' + Q.length));
+        meta.appendChild(el('span', 'tag', it.tag || ''));
+        c.appendChild(meta);
+        var stem = el('p', 'q-stem');
+        var BL = '＿＿';
+        if (it.type === 'cloze' && it.q.indexOf(BL) > -1) {
+          var parts = it.q.split(BL);
+          stem.innerHTML = rich(parts[0]) + '<span class="blank">？</span>' + rich(parts.slice(1).join(BL));
+        } else stem.innerHTML = rich(it.q);
+        c.appendChild(stem);
+        var opts = el('div', 'opts' + (it.type === 'cloze' ? ' chips' : ''));
+        var order = shuffle(it.options.map(function (o, i) { return i; }), D.slug + '-' + it.id);
+        var exp = el('div', 'explain'); exp.setAttribute('aria-live', 'polite');
+        order.forEach(function (oi, pos) {
+          var b = el('button', 'opt'); b.type = 'button';
+          b.innerHTML = '<span class="k">' + KEYS[pos] + '</span><span>' + rich(it.options[oi]) + '</span>';
+          b.dataset.oi = oi;
+          b.addEventListener('click', function () {
+            var ok = oi === it.answer; answered++; if (ok) right++;
+            opts.querySelectorAll('.opt').forEach(function (o) {
+              o.disabled = true;
+              if (+o.dataset.oi === it.answer) o.classList.add('correct');
+              else if (o === b) o.classList.add('wrong'); else o.classList.add('dim');
+            });
+            if (it.type === 'cloze') stem.querySelector('.blank').innerHTML = rich(it.options[it.answer]);
+            exp.innerHTML = '<span class="v ' + (ok ? 'ok">答對了' : 'ng">再想想') + '</span>' + rich(it.explain);
+            exp.classList.add('show'); updateScore();
+            if (answered === Q.length) showResult();
+          });
+          opts.appendChild(b);
+        });
+        c.appendChild(opts); c.appendChild(exp); box.appendChild(c);
+      });
+    }
+    function showResult() {
+      var ratio = right / Q.length;
+      var m = ratio === 1 ? '全對！這篇的觀念已經很穩，可以挑戰下一篇。' : ratio >= .7 ? '大部分都掌握了，回頭看看答錯題的詳解就更完整。' : '先回到課文和字詞整理再讀一次，再重新測驗會更有感。';
+      res.innerHTML = '<div class="big">' + right + ' / ' + Q.length + '</div><p>' + m + '</p>';
+      var again = el('button', 'primary', '重新測驗'); again.type = 'button';
+      again.addEventListener('click', function () { renderQuiz(); document.getElementById('quiz').scrollIntoView(); });
+      res.appendChild(again); res.classList.add('show');
+    }
+    renderQuiz();
+  }
+
+  /* ---------- 延伸閱讀與頁尾 ---------- */
+  if (D.related && D.related.length) {
+    var s6 = section('related', { kicker: 'NEXT', title: '接著讀' }), rl = el('div', 'related');
+    D.related.forEach(function (r) {
+      var a = el('a'); a.href = '../' + r.slug + '/';
+      a.innerHTML = '<b>' + esc(r.title) + '</b><span>' + rich(r.why) + '</span>';
+      rl.appendChild(a);
+    });
+    s6.appendChild(rl); main.appendChild(s6);
+  }
+  var ft = el('footer'), fw = el('div', 'wrap');
+  fw.innerHTML = rich(D.footer || '') + (D.textbook ? '<br>課本對應：' + rich(D.textbook) : '');
+  ft.appendChild(fw); app.appendChild(ft);
+})();
+</script>
+<!-- ===== ENGINE:SCRIPT END ===== -->
+</body>
+</html>
